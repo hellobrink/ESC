@@ -1,0 +1,74 @@
+/* =============================================================================
+   ESC — reset
+   -----------------------------------------------------------------------------
+   Flattens browser defaults only. No colours, no sizes, no opinions.
+   Nothing in here should ever need changing.
+   ========================================================================== */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body,
+h1, h2, h3, h4, h5, h6,
+p,
+ul, ol, li,
+dl, dt, dd,
+figure,
+blockquote,
+fieldset,
+legend {
+  margin: 0;
+  padding: 0;
+}
+
+/* Lists that carry a class are structural, not prose: drop the markers. */
+ul[class],
+ol[class] { list-style: none; }
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+}
+
+textarea { resize: vertical; }
+
+button { background: none; }
+
+fieldset {
+  border: 0;
+  min-width: 0;
+}
+
+table { border-collapse: collapse; }
+
+/* Screens are hidden with the hidden attribute. This must always win. */
+[hidden] { display: none !important; }
+
+/* Respect a stated preference for less movement. There is no animation in this
+   tool by default, but anything added later inherits the courtesy. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

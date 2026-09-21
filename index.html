@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Education Scalability Conversations</title>
+
+<!-- Empty data URI: stops the browser making a request for a favicon.
+     Zero external requests is a hard requirement. -->
+<link rel="icon" href="data:,">
+
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/print.css" media="print">
+</head>
+
+<body class="app">
+
+<a class="skip-link" href="#main">Skip to the main content</a>
+
+<!-- =========================================================================
+     LOGO BAR — top of every screen and every printed page.
+     Two empty slots. Drop the artwork straight in; nothing else needs changing.
+     HIDDEN FOR NOW by a rule at the end of css/layout.css and css/print.css.
+     ====================================================================== -->
+<div class="logo-bar-wrapper">
+  <div class="l-container">
+    <div class="logo-bar">
+      <div class="logo-bar__slot logo-bar__slot--start" data-logo="global-gateway">
+        <!-- Global Gateway logo goes here -->
+      </div>
+      <div class="logo-bar__slot logo-bar__slot--end" data-logo="eu">
+        <!-- European Union logo goes here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     HEADER — on every screen, and sticky on wider screens. The tool's name,
+     the two actions, and the progress band beneath. While the test-build
+     gate is on show (body.is-gated) only the name is visible.
+     Every id here is wired up in js/app.js.
+     ====================================================================== -->
+<header class="site-header">
+
+  <div class="l-container">
+    <div class="site-header__row">
+
+      <p class="site-header__brand">
+        <a class="site-header__brand-link" id="masthead-brand" href="#/"></a>
+      </p>
+
+      <nav class="site-header__nav nav" aria-label="Sections">
+        <ul class="nav__list">
+          <li class="nav__item"><a class="nav__link" id="nav-review" href="#/review" data-route="review"></a></li>
+          <!-- Destructive. Asks before it wipes anything; see wireProgressControls(). -->
+          <li class="nav__item"><button type="button" class="nav__button nav__button--reset" id="reset-progress"></button></li>
+        </ul>
+      </nav>
+
+    </div>
+  </div>
+
+  <!-- Where the work is held, and the two ways to keep it. data-status on the
+       status line is the styling hook: empty | stored-only | no-storage |
+       downloaded | error -->
+  <div class="progress-band">
+    <div class="l-container">
+      <div class="progress">
+
+        <div class="progress__state">
+          <p class="progress__title" id="progress-title"></p>
+          <p class="progress__status" id="save-status" data-status="empty"
+             role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="progress__actions">
+          <button type="button" class="progress__save" id="save-progress"></button>
+          <div class="progress__load">
+            <!-- The input stays in the document and in the tab order; only
+                 the label is seen. Input first, so the label can show its
+                 focus. -->
+            <input class="progress__load-input" type="file" id="load-progress"
+                   accept=".json,application/json">
+            <label class="progress__load-label" id="load-progress-label" for="load-progress"></label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</header>
+
+<!-- =========================================================================
+     MAIN — one section per screen. Exactly one is visible at a time; the rest
+     carry the hidden attribute.
+     ====================================================================== -->
+<main class="app__main" id="main">
+  <div class="l-container">
+
+    <!-- ---------------------------------------------------------------------
+         Shown only if content/modules.js failed to load.
+         ------------------------------------------------------------------ -->
+    <div class="notice" id="content-error" hidden></div>
+
+    <!-- ---------------------------------------------------------------------
+         SESSION GATE — TEST BUILDS ONLY. Never shown when BUILD is "release".
+         States what a test session records, in plain English, and asks for a
+         group code. All text comes from content/modules.js.
+         ------------------------------------------------------------------ -->
+    <section class="screen screen--gate gate" id="session-gate" aria-labelledby="gate-title" hidden>
+      <h1 class="screen__title gate__title" id="gate-title" tabindex="-1"></h1>
+      <p class="gate__notice" id="gate-notice"></p>
+      <form class="gate__form" id="gate-form" novalidate>
+        <div class="field gate__field" id="gate-code-field">
+          <label class="field__label" for="gate-code" id="gate-code-label"></label>
+          <p class="field__hint" id="gate-code-hint"></p>
+          <input class="field__input" type="text" id="gate-code"
+                 autocomplete="off" maxlength="40" aria-describedby="gate-code-hint gate-error">
+          <p class="field__error" id="gate-error" role="alert"></p>
+        </div>
+        <button type="submit" class="gate__submit" id="gate-submit"></button>
+      </form>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         HOME — hero, then three sections that behave as tabs.
+         The sections switch on the hash (#about, #guidelines, #modules), so
+         every link into them is an ordinary anchor and deep links work.
+         ------------------------------------------------------------------ -->
+    <section class="screen screen--home" id="screen-home" aria-labelledby="home-title" hidden>
+
+      <div class="hero">
+        <h1 class="screen__title hero__title" id="home-title" tabindex="-1"></h1>
+        <p class="hero__intro" id="home-intro"></p>
+        <a class="hero__cta" id="home-cta" href="#modules"></a>
+      </div>
+
+      <nav class="home-nav" id="home-nav">
+        <ul class="home-nav__list">
+          <li class="home-nav__item"><a class="home-nav__link" id="home-nav-about" href="#about"></a></li>
+          <li class="home-nav__item"><a class="home-nav__link" id="home-nav-guidelines" href="#guidelines"></a></li>
+          <li class="home-nav__item"><a class="home-nav__link" id="home-nav-modules" href="#modules"></a></li>
+        </ul>
+      </nav>
+
+      <section class="home-section about" id="about" aria-labelledby="about-title">
+        <h2 class="home-section__title" id="about-title" tabindex="-1"></h2>
+        <div class="about__body" id="about-body"></div>
+      </section>
+
+      <section class="home-section guidelines" id="guidelines" aria-labelledby="guidelines-title" hidden>
+        <h2 class="home-section__title" id="guidelines-title" tabindex="-1"></h2>
+        <div class="guidelines__body" id="guidelines-body"></div>
+      </section>
+
+      <section class="home-section module-list" id="modules" aria-labelledby="modules-title" hidden>
+        <h2 class="home-section__title" id="modules-title" tabindex="-1"></h2>
+        <p class="module-list__intro" id="module-list-intro"></p>
+        <ol class="module-list__items" id="module-list"></ol>
+      </section>
+
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         MODULE — rendered from the content file.
+         ------------------------------------------------------------------ -->
+    <section class="screen screen--module" id="screen-module" aria-labelledby="module-title" hidden>
+      <h1 class="screen__title" id="module-title" tabindex="-1"></h1>
+      <div id="module-body"></div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         REVIEW — everything typed across all modules, plus the export options.
+         In test builds, also the "send to the team" block.
+         ------------------------------------------------------------------ -->
+    <section class="screen screen--review" id="screen-review" aria-labelledby="review-title" hidden>
+      <h1 class="screen__title" id="review-title" tabindex="-1"></h1>
+      <p class="review__intro" id="review-intro"></p>
+      <div id="review-body"></div>
+    </section>
+
+  </div>
+</main>
+
+<!-- =========================================================================
+     FOOTER — on every screen and every printed page.
+
+     The European Union funding statement below is a funding requirement and
+     must appear verbatim. It is written here, not in content/modules.js, so
+     that a content edit cannot change or remove it by accident. Do not move it.
+     ====================================================================== -->
+<footer class="site-footer">
+  <div class="l-container">
+
+    <p class="site-footer__funding">This publication was funded by the European Union. Its contents are the sole responsibility of the author and do not necessarily reflect the views of the European Union.</p>
+
+    <!-- Attribution block. Content-driven from content/modules.js. -->
+    <section class="site-footer__attribution attribution" aria-labelledby="attribution-title">
+      <h2 class="attribution__title" id="attribution-title"></h2>
+      <dl class="attribution__list" id="attribution-list"></dl>
+    </section>
+
+  </div>
+</footer>
+
+<!-- =========================================================================
+     SCRIPTS — plain scripts, loaded in dependency order. No modules, no
+     bundler, no fetch: this all has to work from file://
+     ====================================================================== -->
+<script src="config.js"></script>
+<script src="content/modules.js"></script>
+<script src="js/state.js"></script>
+<script src="js/telemetry.js"></script>
+<script src="js/export.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

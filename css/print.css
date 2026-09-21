@@ -1,0 +1,330 @@
+/* =============================================================================
+   ESC — print
+   =============================================================================
+   Turns the module on screen into a clean A4 worksheet.
+
+   Two jobs:
+     1. Print what the group typed, in full and unclipped.
+     2. Where a field is empty, print space to write in instead, so an unfilled
+        module comes out as a paper worksheet a group can sit round.
+
+   Which of the two happens is decided by the field--filled / field--empty class
+   that js/app.js puts on each field wrapper.
+
+   Loaded with media="print", so none of this can affect the screen.
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   PAGE SETUP
+
+   The margins below are the ONE hard-coded measurement in the whole project.
+   Browsers do not reliably read CSS custom properties inside an @page rule, so
+   a var() here would silently fall back to the browser's default margins.
+
+   The top and bottom margins are deliberately deep. The repeating logo bar and
+   funding statement sit at the very top and bottom of the content area, and
+   these margins are what keeps them clear of the paper edge.
+
+   They cannot be pushed out into the margin itself: Chrome clips a fixed
+   element that leaves the content box, and it disappears from the printout.
+   -------------------------------------------------------------------------- */
+@page {
+  size: A4;
+  margin: 25mm 16mm 23mm 16mm;
+}
+
+body {
+  background: none;
+  color: #000000;
+  font-size: var(--esc-print-font-size);
+  line-height: var(--esc-print-line-height);
+}
+
+/* -----------------------------------------------------------------------------
+   REPEATED ON EVERY PAGE
+
+   The logo bar and the funding statement are turned into table header and
+   footer groups. Browsers repeat those on every printed page AND reserve room
+   for them in the flow, so a long answer cannot run underneath.
+
+   position:fixed also repeats, but it does NOT reserve room — a typed answer
+   longer than a page prints straight through the funding statement. It was
+   tried first and rejected for exactly that. Pushing a fixed element out into
+   the page margin to dodge the collision does not work either: the browser
+   clips anything that leaves the content box and it vanishes from the printout.
+   -------------------------------------------------------------------------- */
+/* body.app, not body: layout.css sets display:flex and min-height:100vh on
+   .app, and a bare element selector would lose to it. The min-height has to go
+   too — a viewport height means a full page, which prints as a blank first
+   page. */
+/* The whole repeating-band arrangement depends on display:contents, which is
+   Chrome 65+ / Edge 79+. Without it the module would end up as one giant,
+   unbreakable table row and print as a run of blank pages — far worse than not
+   repeating at all. So it is all gated behind @supports.
+
+   Older browsers fall through to ordinary block flow: the logo bar prints once
+   at the top and the funding statement once at the end. Nothing overlaps,
+   nothing is lost, and nothing is blank. */
+@supports (display: contents) {
+
+  body.app {
+    display: table;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .logo-bar-wrapper { display: table-header-group; }
+
+  .app__main { display: table-row-group; }
+
+  /* The row group must contain MANY rows, not one enormous one: a single row
+     holding the whole module cannot be split, and the browser pushes it whole,
+     leaving blank pages behind it. display:contents dissolves the wrappers so
+     each heading, prompt and idea becomes a row of its own and pages can break
+     between them. */
+  .app__main > .l-container,
+  .screen,
+  #module-body,
+  .prompts,
+  .prompt-list,
+  .ideas,
+  .ideas__list,
+  .next-steps,
+  .next-steps__list,
+  #review-body,
+  .review__module,
+  .review__prompts,
+  .review__next-steps,
+  .home-section,
+  .about__body,
+  .guidelines__body,
+  .guidelines-section { display: contents; }
+
+}
+
+.logo-bar { padding: 0; }
+
+.logo-bar__slot {
+  min-height: var(--esc-print-logo-height);
+  outline: none;                 /* the placeholder dashes are a screen aid only */
+}
+
+/* KNOWN LIMIT, and a decision to revisit.
+   A footer group prints on the LAST page only: Chrome repeats table header
+   groups across printed pages but not footer groups. The alternatives were both
+   worse, and both were tried and measured:
+     position:fixed  repeats on every page, but reserves no room, so a long
+                     answer prints straight through the statement and the
+                     group loses words off their own worksheet.
+     in the margin   clipped by the browser and does not print at all.
+   The third option is to move the statement up into the repeating band at the
+   top of every page beside the logos. That works and loses nothing — it is a
+   design decision, not a technical one, so it has been left alone. */
+@supports (display: contents) {
+  .site-footer { display: table-footer-group; }
+}
+
+.site-footer {
+  padding: 0;
+  font-size: var(--esc-print-font-size-small);
+}
+
+/* The rule sits on the paragraph, not the footer group: a border on a table
+   row group is not reliably painted. */
+.site-footer__funding {
+  max-width: none;
+  margin-bottom: 0;
+  border-top: var(--esc-print-rule);
+  padding-top: var(--esc-space-2);
+}
+
+/* -----------------------------------------------------------------------------
+   NOT PRINTED
+   Anything that cannot be used on paper, plus feedback on the tool, which is
+   collected separately and is not part of the group's write-up.
+   -------------------------------------------------------------------------- */
+.skip-link,
+.site-header,
+.module__actions,
+.notice,
+.attribution,
+.feedback,
+.prompt__feedback,
+.module-list__intro,
+.export,
+.review__edit,
+.review__intro,
+.gate,
+.hero__cta,
+.home-nav,
+.guidelines-index,
+.module-card__media { display: none; }
+
+/* Screens that are not on show are already hidden by the hidden attribute. */
+
+/* -----------------------------------------------------------------------------
+   LAYOUT
+   -------------------------------------------------------------------------- */
+.l-container {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.app__main {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   TYPE AND PAGE BREAKS
+   Never leave a heading stranded at the foot of a page, and never split a
+   prompt across two.
+   -------------------------------------------------------------------------- */
+h1, h2, h3 {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+/* Keep whole only the things that CANNOT be taller than a page.
+   A block that refuses to break and does not fit is pushed to the next page
+   whole, leaving the one before it blank — so a prompt as a whole, and a
+   filled-in answer, are both deliberately left breakable. An empty answer box
+   is a fixed height, so it is safe to keep with its question. */
+.field--empty,
+.rating,
+.ideas__item,
+.next-steps__item {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Each prompt is a table row in print, and a row ignores padding and is
+   unreliable about borders. So the rule between prompts and the space above
+   each one both live on the heading, which is an ordinary block. */
+.prompt-list__item {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.prompt__question {
+  border-top: var(--esc-print-rule);
+  padding-top: var(--esc-space-5);
+  margin-top: var(--esc-space-4);
+}
+
+/* The prompts section wrapper dissolves into rows in print (display:contents),
+   taking its rule and spacing with it, so the heading carries them instead. */
+.prompts__title {
+  border-top: var(--esc-print-rule);
+  padding-top: var(--esc-space-5);
+  margin-top: var(--esc-space-6);
+}
+
+/* The review screen prints too: one page or many, same rules. */
+.review__module {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.review__module-title {
+  border-top: var(--esc-print-rule);
+  padding-top: var(--esc-space-5);
+  margin-top: var(--esc-space-4);
+}
+
+.review__answer { white-space: pre-wrap; }
+.review__prompt { break-inside: auto; }
+
+.ideas__item + .ideas__item,
+.next-steps__item + .next-steps__item { margin-top: 0; }
+
+.ideas__item-title,
+.next-steps__item .field { margin-top: var(--esc-space-4); }
+
+.screen__title { font-size: var(--esc-print-font-size-title); }
+.central-question__text { font-size: var(--esc-print-font-size-question); }
+.prompt__question { font-size: var(--esc-print-font-size-prompt); }
+.screen__section-title { font-size: var(--esc-print-font-size-prompt); }
+
+.module__section { margin-top: var(--esc-space-5); }
+
+.prompt__guidance,
+.central-question__text,
+.ideas__list,
+.field { max-width: none; }
+
+/* Links print as plain text — a printed URL is noise on a worksheet. */
+a { text-decoration: none; }
+
+/* The screen heading is focused after every navigation, for keyboard users.
+   A focus ring has no meaning on paper and prints as a stray rule. */
+:focus,
+:focus-visible { outline: none; }
+
+/* -----------------------------------------------------------------------------
+   FIELDS — the heart of the worksheet
+
+   filled : print the typed text from the mirror <p>, so nothing is clipped by
+            the height of a textarea.
+   empty  : print the control itself as ruled space to write in.
+   -------------------------------------------------------------------------- */
+.field--filled .field__input { display: none; }
+
+.field--filled .field__print {
+  display: block;
+  white-space: pre-wrap;            /* keep the line breaks people typed */
+  padding-bottom: var(--esc-space-2);
+}
+
+.field--empty .field__print { display: none; }
+
+.field--empty .field__input {
+  display: block;
+  width: 100%;
+  border: var(--esc-print-rule);
+  background: none;
+}
+
+.field--empty .field__input--answer { min-height: var(--esc-print-writing-space); }
+.field--empty .field__input--feedback { min-height: var(--esc-print-writing-space); }
+.field--empty .field__input--next-step { min-height: var(--esc-print-writing-line); }
+
+/* -----------------------------------------------------------------------------
+   RATINGS
+   On screen the radios are drawn as pills (see layout.css). On paper the same
+   pills print: unfilled ones are boxes to mark with a pen, the filled one
+   records what the group decided. print-color-adjust keeps the filled one
+   from being dropped by the browser's ink-saving.
+   -------------------------------------------------------------------------- */
+.rating__option {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin-right: var(--esc-space-4);
+}
+
+.rating__label {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  border: var(--esc-print-rule);
+  background: none;
+}
+
+.rating__input:checked + .rating__label {
+  color: var(--esc-color-choice-selected-text);
+  background-color: var(--esc-color-choice-selected-bg);
+}
+
+/* -----------------------------------------------------------------------------
+   PILLS — outlined on paper, no ink-heavy fills
+   -------------------------------------------------------------------------- */
+.pill {
+  border: var(--esc-print-rule);
+  background: none;
+  margin-right: var(--esc-space-2);
+}
+
+/* LOGO BAR — HIDDEN FOR NOW, in step with css/layout.css. With it hidden there
+   is no repeating band, and the page margin alone keeps content off the edge.
+   Delete this rule to bring the band back on every printed page. */
+.logo-bar-wrapper { display: none; }

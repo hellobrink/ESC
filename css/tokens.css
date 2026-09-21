@@ -1,0 +1,239 @@
+/* =============================================================================
+   ESC — design tokens
+   =============================================================================
+   DESIGNER'S TERRITORY. Every colour, space, size, radius and border width in
+   the tool is declared here and nowhere else. Change a value here and it
+   changes everywhere.
+
+   The values below are deliberately neutral placeholders: greyscale, a system
+   font stack, a plain modular scale. They are not a design.
+
+   Naming: --esc-<group>-<name>
+   ========================================================================== */
+
+:root {
+
+  /* ---------------------------------------------------------------------------
+     COLOUR — neutral greyscale placeholders
+     ------------------------------------------------------------------------ */
+  --esc-color-bg: #ffffff;
+  --esc-color-surface: #f4f4f4;
+  --esc-color-surface-sunken: #ebebeb;
+
+  --esc-color-text: #1a1a1a;
+  --esc-color-text-muted: #565656;
+  --esc-color-text-inverse: #ffffff;
+
+  --esc-color-border: #d0d0d0;
+  --esc-color-border-strong: #8a8a8a;
+
+  --esc-color-link: #1a1a1a;
+  --esc-color-link-hover: #000000;
+
+  --esc-color-field-bg: #ffffff;
+  --esc-color-field-border: #8a8a8a;
+
+  --esc-color-focus: #000000;
+
+  /* A secondary layer of the interface: the feedback-on-the-tool areas sit on
+     this so they read as separate from the group's own answers. */
+  --esc-color-layer-secondary: #f4f4f4;
+
+  /* Selectable choices (Confident / Unsure / Concerned). Real radio buttons,
+     drawn as pills. Neutral: selected is simply dark on light. */
+  --esc-color-choice-bg: #ffffff;
+  --esc-color-choice-text: #1a1a1a;
+  --esc-color-choice-border: #8a8a8a;
+  --esc-color-choice-hover-bg: #f4f4f4;
+  --esc-color-choice-selected-bg: #1a1a1a;
+  --esc-color-choice-selected-text: #ffffff;
+  --esc-color-choice-selected-border: #1a1a1a;
+
+  /* Buttons. "Primary" is the one action a screen leads with (Get started). */
+  --esc-color-button-primary-bg: #1a1a1a;
+  --esc-color-button-primary-text: #ffffff;
+  --esc-color-button-primary-border: #1a1a1a;
+  --esc-color-button-bg: #ffffff;
+  --esc-color-button-text: #1a1a1a;
+  --esc-color-button-border: #8a8a8a;
+
+  /* The current item in the home section switcher. */
+  --esc-color-nav-current: #1a1a1a;
+
+  /* Header and the progress band beneath it. */
+  --esc-color-header-bg: #ffffff;
+  --esc-color-header-border: #d0d0d0;
+  --esc-color-progress-bg: #f4f4f4;
+
+  /* The header sticks from this width up. Below it the header scrolls away,
+     because on a phone it would otherwise hold a third of the screen. */
+  --esc-sticky-from: 45em;
+  /* Room left above a heading when the page scrolls to it, so it clears the
+     stuck header. Roughly the header's height plus a breath. */
+  --esc-sticky-offset: 12rem;
+  --esc-z-header: 10;
+
+  /* Per-state hooks for the three choices, if you want them to differ.
+     Unused by default — see .rating__option--confident etc. in layout.css. */
+  --esc-color-state-confident: #6f6f6f;
+  --esc-color-state-unsure: #6f6f6f;
+  --esc-color-state-concerned: #6f6f6f;
+
+  /* ---------------------------------------------------------------------------
+     MODULE COLOURS — placeholders, one per module, for wayfinding.
+     All neutral until you set them. Each module card and the conversation
+     screen carry data-module="a" … "g"; layout.css maps that attribute to
+     --esc-module-color, so a component only ever needs var(--esc-module-color).
+     ------------------------------------------------------------------------ */
+  --esc-module-a-color: #6f6f6f;
+  --esc-module-b-color: #6f6f6f;
+  --esc-module-c-color: #6f6f6f;
+  --esc-module-d-color: #6f6f6f;
+  --esc-module-e-color: #6f6f6f;
+  --esc-module-f-color: #6f6f6f;
+  --esc-module-g-color: #6f6f6f;
+  --esc-module-color: var(--esc-color-border-strong);   /* fallback outside a module */
+
+  /* A light tint per module, for surfaces: the band at the top of each card
+     when it has no picture. Pair each with its colour above. */
+  --esc-module-a-tint: #e6e6e6;
+  --esc-module-b-tint: #e6e6e6;
+  --esc-module-c-tint: #e6e6e6;
+  --esc-module-d-tint: #e6e6e6;
+  --esc-module-e-tint: #e6e6e6;
+  --esc-module-f-tint: #e6e6e6;
+  --esc-module-g-tint: #e6e6e6;
+  --esc-module-tint: var(--esc-color-surface-sunken);
+
+  /* ---------------------------------------------------------------------------
+     PILLS — stage and stakeholder tags. Tinted, no border, so they read as
+     labels rather than buttons. Every stage and every stakeholder heading has
+     its own hook; all neutral until you set them.
+     ------------------------------------------------------------------------ */
+  --esc-color-pill-bg: #ebebeb;
+  --esc-color-pill-text: #1a1a1a;
+  --esc-pill-radius: 999px;                 /* fully rounded ends */
+  --esc-pill-padding: var(--esc-space-1) var(--esc-space-3);
+
+  --esc-stage-ideation-bg: var(--esc-color-pill-bg);
+  --esc-stage-rd-bg: var(--esc-color-pill-bg);
+  --esc-stage-proof-of-concept-bg: var(--esc-color-pill-bg);
+  --esc-stage-transition-to-scale-bg: var(--esc-color-pill-bg);
+
+  --esc-category-internal-bg: var(--esc-color-pill-bg);      /* Inside your organisation */
+  --esc-category-government-bg: var(--esc-color-pill-bg);    /* Government & the education system */
+  --esc-category-allies-bg: var(--esc-color-pill-bg);        /* Wider allies */
+
+  /* Notices (the test-build recording notice, error messages). */
+  --esc-color-notice-bg: #f4f4f4;
+  --esc-color-notice-border: #8a8a8a;
+
+  /* ---------------------------------------------------------------------------
+     TYPE — system stack. Self-hosted font files get swapped in here later.
+     ------------------------------------------------------------------------ */
+  --esc-font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --esc-font-family-heading: var(--esc-font-family-base);
+
+  --esc-font-size-xs: 0.75rem;    /* 12px */
+  --esc-font-size-sm: 0.875rem;   /* 14px */
+  --esc-font-size-md: 1rem;       /* 16px */
+  --esc-font-size-lg: 1.125rem;   /* 18px */
+  --esc-font-size-xl: 1.375rem;   /* 22px */
+  --esc-font-size-2xl: 1.75rem;   /* 28px */
+  --esc-font-size-3xl: 2.25rem;   /* 36px */
+
+  --esc-font-weight-normal: 400;
+  --esc-font-weight-bold: 700;
+
+  --esc-line-height-base: 1.5;
+  --esc-line-height-tight: 1.25;
+
+  /* Comfortable reading width for a paragraph. */
+  --esc-measure: 68ch;
+
+  /* ---------------------------------------------------------------------------
+     SPACE — one scale, used for margin, padding and gaps
+     ------------------------------------------------------------------------ */
+  --esc-space-1: 0.25rem;
+  --esc-space-2: 0.5rem;
+  --esc-space-3: 0.75rem;
+  --esc-space-4: 1rem;
+  --esc-space-5: 1.5rem;
+  --esc-space-6: 2rem;
+  --esc-space-7: 3rem;
+  --esc-space-8: 4rem;
+
+  /* ---------------------------------------------------------------------------
+     BORDERS AND RADII
+     ------------------------------------------------------------------------ */
+  --esc-border-width: 1px;
+  --esc-border-width-thick: 2px;
+  --esc-radius-none: 0;
+  --esc-radius-sm: 0;
+  --esc-radius-md: 0;
+
+  /* ---------------------------------------------------------------------------
+     FOCUS RING — keyboard users depend on this. Keep it visible.
+     ------------------------------------------------------------------------ */
+  --esc-focus-width: 2px;
+  --esc-focus-offset: 2px;
+
+  /* ---------------------------------------------------------------------------
+     LAYOUT
+     ------------------------------------------------------------------------ */
+  --esc-module-card-min: 16rem;   /* narrowest a module card gets before it wraps */
+  --esc-module-card-media-height: 5.5rem;   /* the band or picture at the top of a card */
+  --esc-button-min-height: 2.75rem;
+  --esc-button-padding: var(--esc-space-3) var(--esc-space-5);
+  --esc-nav-underline: var(--esc-border-width-thick);
+  --esc-width-container: 60rem;   /* the main page width */
+  --esc-width-prose: 44rem;       /* narrower column for reading text */
+  --esc-page-gutter: var(--esc-space-4);
+
+  /* Empty logo slots in the top bar. Sized so the boxes are visible while
+     empty; artwork drops straight in. */
+  --esc-logo-slot-width: 8rem;
+  --esc-logo-slot-height: 3rem;
+  /* Scaffolding aid only — set to `none` once real logos are in place. */
+  --esc-logo-slot-outline: 1px dashed var(--esc-color-border);
+
+  /* Form fields. The two heights are minimums: the browser lets people drag a
+     textarea taller, and nothing clips if they type past the bottom. */
+  --esc-field-min-height: 2.5rem;
+  --esc-field-padding: var(--esc-space-3);
+  --esc-field-height-answer: 8rem;
+  --esc-field-height-feedback: 5rem;
+
+  /* Selectable choices: comfortable to tap, and never smaller than this. */
+  --esc-choice-min-width: 5rem;
+  --esc-choice-min-height: 2.75rem;
+  --esc-choice-padding: var(--esc-space-2) var(--esc-space-3);
+  --esc-choice-radius: var(--esc-radius-md);
+
+  /* Width of the reading column on the conversation screen. */
+  --esc-width-worksheet: 44rem;
+
+  /* ---------------------------------------------------------------------------
+     PRINT — used by css/print.css
+
+     ONE EXCEPTION to the no-hard-coded-values rule lives in print.css: the
+     @page margin. Browsers do not reliably read custom properties inside an
+     @page rule, so it is written literally there. The two offsets below place
+     the repeating logo bar and footer INSIDE those page margins, so they must
+     stay in step with it. Both are commented at the point of use.
+     ------------------------------------------------------------------------ */
+  --esc-print-font-size: 11pt;
+  --esc-print-font-size-title: 18pt;
+  --esc-print-font-size-question: 14pt;   /* the central question */
+  --esc-print-font-size-prompt: 12pt;
+  --esc-print-font-size-small: 8pt;       /* the funding statement */
+  --esc-print-line-height: 1.4;
+
+  /* Blank space where a field is empty, so an unfilled module prints as a
+     worksheet somebody can write on. */
+  --esc-print-writing-space: 26mm;
+  --esc-print-writing-line: 9mm;      /* single-line fields, e.g. next steps */
+
+  --esc-print-logo-height: 14mm;
+  --esc-print-rule: 0.4pt solid #000000;
+}
