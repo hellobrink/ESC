@@ -73,7 +73,6 @@
   --esc-color-border-strong: var(--esc-brand-blue);
 
   --esc-color-link: var(--esc-brand-link);
-  --esc-color-link-hover: var(--esc-brand-blue);
 
   --esc-color-field-bg: #ffffff;
   --esc-color-field-border: var(--esc-brand-rule);
@@ -164,14 +163,9 @@
   --esc-pill-radius: 999px;                 /* fully rounded ends */
   --esc-pill-padding: var(--esc-space-1) var(--esc-space-3);
 
-  /* Stage pills take the ochre so "Use from" reads apart from "Use with",
-     with white text like every dark pill. The guide's exact ochre (#d07f27)
-     only gives white 3.1:1, so the pill uses the same hue and saturation a
-     step deeper, where white reaches 4.8:1. The exact ochre still draws the
-     rules and numbers. */
-  --esc-brand-ochre-deep: #a3631f;
-  --esc-color-pill-stage-bg: var(--esc-brand-ochre-deep);
-  --esc-color-pill-stage-text: #ffffff;
+  /* Stage pills: the same light treatment as the stakeholder pills, dark text. */
+  --esc-color-pill-stage-bg: var(--esc-color-pill-bg);
+  --esc-color-pill-stage-text: var(--esc-color-pill-text);
   --esc-stage-ideation-bg: var(--esc-color-pill-stage-bg);
   --esc-stage-rd-bg: var(--esc-color-pill-stage-bg);
   --esc-stage-proof-of-concept-bg: var(--esc-color-pill-stage-bg);

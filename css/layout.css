@@ -78,10 +78,6 @@ a {
   color: var(--esc-color-link);
 }
 
-a:hover {
-  color: var(--esc-color-link-hover);
-}
-
 /* Focus. The plain :focus rule is the fallback for older browsers; the
    :focus-visible pair below refines it where supported. Older browsers ignore
    the whole second rule, which is exactly what we want. */
@@ -474,7 +470,8 @@ a:hover {
   color: var(--esc-color-text-muted);
 }
 
-.home-nav__link:hover { color: var(--esc-color-text); }
+/* Hover: the underline appears faintly, the text colour stays put. */
+.home-nav__link:hover { border-bottom-color: var(--esc-color-border); }
 
 .home-nav__link[aria-current="true"] {
   color: var(--esc-color-nav-current);
