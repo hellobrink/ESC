@@ -27,6 +27,51 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--esc-font-family-heading);
   line-height: var(--esc-line-height-tight);
+  color: var(--esc-color-heading);
+}
+
+/* ---------------------------------------------------------------------------
+   BRAND ROLES — how the guide's visual language lands on the components.
+   Page titles: light weight, display blue, a short accent rule beneath.
+   Eyebrows: small bold uppercase labels in the structural blue.
+   ------------------------------------------------------------------------ */
+.screen__title {
+  font-weight: var(--esc-font-weight-light);
+  color: var(--esc-color-heading-display);
+}
+
+.screen__title::after {
+  content: "";
+  display: block;
+  width: var(--esc-accent-rule-width);
+  height: var(--esc-accent-rule-height);
+  margin-top: var(--esc-space-3);
+  background-color: var(--esc-color-accent);
+}
+
+.module__letter,
+.module-card__letter,
+.review__module-letter,
+.review__group-label,
+.module__meta-term,
+.module-card__meta-term,
+.central-question__label,
+.progress__title,
+.guidelines-index__number {
+  font-size: var(--esc-eyebrow-size);
+  font-weight: var(--esc-font-weight-bold);
+  letter-spacing: var(--esc-eyebrow-tracking);
+  text-transform: uppercase;
+  color: var(--esc-color-heading);
+}
+
+/* The numbers that lead a prompt or a guidelines section carry the accent.
+   They are large enough for the ochre to pass as large text on white. */
+.prompt__number,
+.guidelines-section__number {
+  font-size: var(--esc-font-size-lg);
+  font-weight: var(--esc-font-weight-bold);
+  color: var(--esc-color-accent);
 }
 
 a {
@@ -83,6 +128,7 @@ a:hover {
   border-radius: var(--esc-pill-radius);
 }
 
+.pill[data-stage] { color: var(--esc-color-pill-stage-text); }
 .pill[data-stage="ideation"]            { background-color: var(--esc-stage-ideation-bg); }
 .pill[data-stage="rd"]                  { background-color: var(--esc-stage-rd-bg); }
 .pill[data-stage="proof-of-concept"]    { background-color: var(--esc-stage-proof-of-concept-bg); }
@@ -192,8 +238,15 @@ a:hover {
    ------------------------------------------------------------------------ */
 .site-header {
   background-color: var(--esc-color-header-bg);
-  border-bottom: var(--esc-border-width) solid var(--esc-color-header-border);
+  color: var(--esc-color-header-text);
 }
+
+/* Everything in the dark bar is white, and focus rings there are white too. */
+.site-header a:focus,
+.site-header button:focus { outline-color: var(--esc-color-focus-on-brand); }
+
+.site-header a:focus-visible,
+.site-header button:focus-visible { outline-color: var(--esc-color-focus-on-brand); }
 
 /* Sticks to the top from --esc-sticky-from up. Browsers without sticky simply
    leave it in the flow. (A media query cannot read a custom property, so the
@@ -227,7 +280,10 @@ a:hover {
   font-weight: var(--esc-font-weight-bold);
 }
 
-.site-header__brand-link { text-decoration: none; }
+.site-header__brand-link {
+  color: var(--esc-color-header-text);
+  text-decoration: none;
+}
 
 .site-header__brand-link:hover { text-decoration: underline; }
 
@@ -243,6 +299,7 @@ a:hover {
 .nav__button {
   display: inline-block;
   padding: var(--esc-space-2) 0;       /* a comfortable tap height, no box */
+  color: var(--esc-color-header-text);
 }
 
 .nav__link[aria-current="page"] { font-weight: var(--esc-font-weight-bold); }
@@ -252,12 +309,9 @@ a:hover {
 .nav__button {
   border: 0;
   background: none;
-  color: var(--esc-color-link);
   text-decoration: underline;
   cursor: pointer;
 }
-
-.nav__button:hover { color: var(--esc-color-link-hover); }
 
 /* Decorative arrow before Start fresh; screen readers hear only the words. */
 .nav__button--reset::before {
@@ -270,7 +324,7 @@ a:hover {
    ------------------------------------------------------------------------ */
 .progress-band {
   background-color: var(--esc-color-progress-bg);
-  border-bottom: var(--esc-border-width) solid var(--esc-color-header-border);
+  border-bottom: var(--esc-border-width) solid var(--esc-color-progress-border);
 }
 
 .progress {
@@ -287,9 +341,7 @@ a:hover {
   padding-right: var(--esc-space-5);
 }
 
-.progress__title {
-  font-weight: var(--esc-font-weight-bold);
-}
+.progress__title { margin-bottom: var(--esc-space-1); }
 
 .progress__status {
   color: var(--esc-color-text-muted);
@@ -596,8 +648,6 @@ a:hover {
 }
 
 .module-card__letter {
-  font-size: var(--esc-font-size-sm);
-  font-weight: var(--esc-font-weight-bold);
   color: var(--esc-module-color);
   margin-bottom: var(--esc-space-2);
 }
@@ -607,7 +657,10 @@ a:hover {
   margin-bottom: var(--esc-space-4);
 }
 
-.module-card__link { text-decoration: underline; }
+.module-card__link {
+  color: var(--esc-color-heading);
+  text-decoration: underline;
+}
 
 /* Stretch the title link over the card. Nothing else in the card is
    interactive, so nothing is covered. */
@@ -624,10 +677,7 @@ a:hover {
 
 .module-card__meta-row + .module-card__meta-row { margin-top: var(--esc-space-2); }
 
-.module-card__meta-term {
-  color: var(--esc-color-text-muted);
-  margin-bottom: var(--esc-space-1);
-}
+.module-card__meta-term { margin-bottom: var(--esc-space-1); }
 
 .module-card__meta-value { margin-left: 0; }
 
@@ -643,10 +693,8 @@ a:hover {
 
 .module__letter {
   display: block;
-  font-size: var(--esc-font-size-sm);
-  font-weight: var(--esc-font-weight-bold);
-  color: var(--esc-module-color);          /* placeholder colour hook */
-  margin-bottom: var(--esc-space-1);
+  color: var(--esc-module-color);          /* per-module colour hook */
+  margin-bottom: var(--esc-space-2);
 }
 
 .module__name { display: block; }
@@ -661,10 +709,7 @@ a:hover {
 
 .module__meta-row + .module__meta-row { margin-top: var(--esc-space-3); }
 
-.module__meta-term {
-  color: var(--esc-color-text-muted);
-  margin-bottom: var(--esc-space-1);
-}
+.module__meta-term { margin-bottom: var(--esc-space-1); }
 
 .module__meta-value { margin-left: 0; }
 
@@ -686,20 +731,17 @@ a:hover {
   max-width: var(--esc-width-worksheet);
   margin-top: var(--esc-space-7);
   padding-top: var(--esc-space-6);
-  border-top: var(--esc-border-width-thick) solid var(--esc-color-text);
+  border-top: var(--esc-border-width-thick) solid var(--esc-color-border-strong);
 }
 
-.central-question__label {
-  font-size: var(--esc-font-size-sm);
-  font-weight: var(--esc-font-weight-bold);
-  color: var(--esc-color-text-muted);
-  margin-bottom: var(--esc-space-3);
-}
+.central-question__label { margin-bottom: var(--esc-space-3); }
 
+/* The dominant element: display weight and colour, like the guide's titles. */
 .central-question__text {
   font-size: var(--esc-font-size-2xl);
-  font-weight: var(--esc-font-weight-bold);
+  font-weight: var(--esc-font-weight-light);
   line-height: var(--esc-line-height-tight);
+  color: var(--esc-color-heading-display);
 }
 
 .central-question__hint {
@@ -733,10 +775,7 @@ a:hover {
 /* "01" sits above the question. */
 .prompt__number {
   display: block;
-  font-size: var(--esc-font-size-sm);
-  font-weight: var(--esc-font-weight-bold);
-  color: var(--esc-color-text-muted);
-  margin-bottom: var(--esc-space-2);
+  margin-bottom: var(--esc-space-1);
 }
 
 .prompt__question { font-size: var(--esc-font-size-xl); }
@@ -766,6 +805,8 @@ a:hover {
   border: var(--esc-border-width) solid var(--esc-color-field-border);
   border-radius: var(--esc-radius-sm);
 }
+
+.field__input:focus { border-color: var(--esc-color-field-border-focus); }
 
 .field__input::placeholder { color: var(--esc-color-text-muted); }
 
@@ -881,6 +922,7 @@ a:hover {
 .feedback__summary {
   padding: var(--esc-space-3) var(--esc-space-4);
   cursor: pointer;
+  color: var(--esc-color-heading);
   list-style: none;                    /* no disclosure triangle… */
 }
 
@@ -973,16 +1015,13 @@ a:hover {
 /* The group's name, set large: this is whose work it is. */
 .review__group { margin-bottom: var(--esc-space-5); }
 
-.review__group-label {
-  display: block;
-  font-size: var(--esc-font-size-sm);
-  color: var(--esc-color-text-muted);
-}
+.review__group-label { display: block; }
 
 .review__group-name {
   display: block;
   font-size: var(--esc-font-size-xl);
   font-weight: var(--esc-font-weight-bold);
+  color: var(--esc-color-heading);
 }
 
 .review__module {
@@ -994,11 +1033,7 @@ a:hover {
 .review__group + .review__module,
 .review__intro + .review__module { border-top: 0; padding-top: 0; }
 
-.review__module-letter {
-  display: block;
-  font-size: var(--esc-font-size-sm);
-  color: var(--esc-color-text-muted);
-}
+.review__module-letter { display: block; }
 
 .review__module-name { display: block; }
 
@@ -1050,7 +1085,7 @@ a:hover {
   max-width: var(--esc-width-prose);
   margin-top: var(--esc-space-8);
   padding-top: var(--esc-space-6);
-  border-top: var(--esc-border-width-thick) solid var(--esc-color-text);
+  border-top: var(--esc-border-width-thick) solid var(--esc-color-border-strong);
 }
 
 .export__title { margin-bottom: var(--esc-space-3); }
@@ -1189,6 +1224,8 @@ a:hover {
   .central-question__text { font-size: var(--esc-font-size-xl); }
 
   .prompt__question { font-size: var(--esc-font-size-lg); }
+
+  .hero__title { font-size: var(--esc-font-size-2xl); }
 
   /* Brand on its own line; the three actions in a row beneath. */
   .site-header__brand {

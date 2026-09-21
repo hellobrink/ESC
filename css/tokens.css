@@ -11,29 +11,75 @@
    Naming: --esc-<group>-<name>
    ========================================================================== */
 
+/* -----------------------------------------------------------------------------
+   TYPEFACE — Montserrat, self-hosted from the fonts/ folder. Three weights,
+   Latin subset, WOFF2. No request ever leaves the machine. See fonts/LICENSE.txt.
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Montserrat";
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/montserrat-300.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/montserrat-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/montserrat-700.woff2") format("woff2");
+}
+
 :root {
 
   /* ---------------------------------------------------------------------------
-     COLOUR — neutral greyscale placeholders
+     BRAND — six values, taken from the User Guide to the Education
+     Scalability Checklist. Everything below is assigned from these.
+     ------------------------------------------------------------------------ */
+  --esc-brand-blue: #294f67;           /* structural: headings, header, buttons, selected */
+  --esc-brand-blue-display: #2f6289;   /* large display headings only */
+  --esc-brand-pale: #deecf4;           /* secondary surfaces, grouped information */
+  --esc-brand-ochre: #d07f27;          /* accent: rules and marks, never small text */
+  --esc-brand-link: #3a75b1;           /* links */
+  --esc-brand-rule: #b6b6b6;           /* thin dividers */
+
+  /* ---------------------------------------------------------------------------
+     COLOUR — roles, assigned from the brand values above
      ------------------------------------------------------------------------ */
   --esc-color-bg: #ffffff;
-  --esc-color-surface: #f4f4f4;
-  --esc-color-surface-sunken: #ebebeb;
+  --esc-color-surface: var(--esc-brand-pale);
+  --esc-color-surface-sunken: var(--esc-brand-pale);
 
   --esc-color-text: #1a1a1a;
-  --esc-color-text-muted: #565656;
+  --esc-color-text-muted: #5b6670;
   --esc-color-text-inverse: #ffffff;
 
-  --esc-color-border: #d0d0d0;
-  --esc-color-border-strong: #8a8a8a;
+  /* Headings: bold ones in the structural blue, large light ones in the
+     display blue. The accent draws the short rule under a page title. */
+  --esc-color-heading: var(--esc-brand-blue);
+  --esc-color-heading-display: var(--esc-brand-blue-display);
+  --esc-color-accent: var(--esc-brand-ochre);
 
-  --esc-color-link: #1a1a1a;
-  --esc-color-link-hover: #000000;
+  --esc-color-border: var(--esc-brand-rule);
+  --esc-color-border-strong: var(--esc-brand-blue);
+
+  --esc-color-link: var(--esc-brand-link);
+  --esc-color-link-hover: var(--esc-brand-blue);
 
   --esc-color-field-bg: #ffffff;
-  --esc-color-field-border: #8a8a8a;
+  --esc-color-field-border: var(--esc-brand-rule);
+  --esc-color-field-border-focus: var(--esc-brand-blue);
 
-  --esc-color-focus: #000000;
+  --esc-color-focus: var(--esc-brand-blue);
 
   /* A secondary layer of the interface: the feedback-on-the-tool areas sit on
      this so they read as separate from the group's own answers. */
@@ -42,28 +88,31 @@
   /* Selectable choices (Confident / Unsure / Concerned). Real radio buttons,
      drawn as pills. Neutral: selected is simply dark on light. */
   --esc-color-choice-bg: #ffffff;
-  --esc-color-choice-text: #1a1a1a;
-  --esc-color-choice-border: #8a8a8a;
-  --esc-color-choice-hover-bg: #f4f4f4;
-  --esc-color-choice-selected-bg: #1a1a1a;
+  --esc-color-choice-text: var(--esc-color-text);
+  --esc-color-choice-border: var(--esc-brand-rule);
+  --esc-color-choice-hover-bg: var(--esc-brand-pale);
+  --esc-color-choice-selected-bg: var(--esc-brand-blue);
   --esc-color-choice-selected-text: #ffffff;
-  --esc-color-choice-selected-border: #1a1a1a;
+  --esc-color-choice-selected-border: var(--esc-brand-blue);
 
   /* Buttons. "Primary" is the one action a screen leads with (Get started). */
-  --esc-color-button-primary-bg: #1a1a1a;
+  --esc-color-button-primary-bg: var(--esc-brand-blue);
   --esc-color-button-primary-text: #ffffff;
-  --esc-color-button-primary-border: #1a1a1a;
+  --esc-color-button-primary-border: var(--esc-brand-blue);
   --esc-color-button-bg: #ffffff;
-  --esc-color-button-text: #1a1a1a;
-  --esc-color-button-border: #8a8a8a;
+  --esc-color-button-text: var(--esc-brand-blue);
+  --esc-color-button-border: var(--esc-brand-blue);
 
   /* The current item in the home section switcher. */
-  --esc-color-nav-current: #1a1a1a;
+  --esc-color-nav-current: var(--esc-brand-blue);
 
-  /* Header and the progress band beneath it. */
-  --esc-color-header-bg: #ffffff;
-  --esc-color-header-border: #d0d0d0;
-  --esc-color-progress-bg: #f4f4f4;
+  /* Header: dark brand bar, white text — the global level. The progress
+     band beneath keeps the pale fill, closed by a brand-blue rule. */
+  --esc-color-header-bg: var(--esc-brand-blue);
+  --esc-color-header-text: #ffffff;
+  --esc-color-focus-on-brand: #ffffff;       /* focus ring on the dark bar */
+  --esc-color-progress-bg: var(--esc-brand-pale);
+  --esc-color-progress-border: var(--esc-brand-blue);
 
   /* The header sticks from this width up. Below it the header scrolls away,
      because on a phone it would otherwise hold a third of the screen. */
@@ -75,9 +124,9 @@
 
   /* Per-state hooks for the three choices, if you want them to differ.
      Unused by default — see .rating__option--confident etc. in layout.css. */
-  --esc-color-state-confident: #6f6f6f;
-  --esc-color-state-unsure: #6f6f6f;
-  --esc-color-state-concerned: #6f6f6f;
+  --esc-color-state-confident: var(--esc-brand-blue);
+  --esc-color-state-unsure: var(--esc-brand-blue);
+  --esc-color-state-concerned: var(--esc-brand-blue);
 
   /* ---------------------------------------------------------------------------
      MODULE COLOURS — placeholders, one per module, for wayfinding.
@@ -85,53 +134,61 @@
      screen carry data-module="a" … "g"; layout.css maps that attribute to
      --esc-module-color, so a component only ever needs var(--esc-module-color).
      ------------------------------------------------------------------------ */
-  --esc-module-a-color: #6f6f6f;
-  --esc-module-b-color: #6f6f6f;
-  --esc-module-c-color: #6f6f6f;
-  --esc-module-d-color: #6f6f6f;
-  --esc-module-e-color: #6f6f6f;
-  --esc-module-f-color: #6f6f6f;
-  --esc-module-g-color: #6f6f6f;
-  --esc-module-color: var(--esc-color-border-strong);   /* fallback outside a module */
+  --esc-module-a-color: var(--esc-brand-blue);
+  --esc-module-b-color: var(--esc-brand-blue);
+  --esc-module-c-color: var(--esc-brand-blue);
+  --esc-module-d-color: var(--esc-brand-blue);
+  --esc-module-e-color: var(--esc-brand-blue);
+  --esc-module-f-color: var(--esc-brand-blue);
+  --esc-module-g-color: var(--esc-brand-blue);
+  --esc-module-color: var(--esc-brand-blue);            /* fallback outside a module */
 
   /* A light tint per module, for surfaces: the band at the top of each card
      when it has no picture. Pair each with its colour above. */
-  --esc-module-a-tint: #e6e6e6;
-  --esc-module-b-tint: #e6e6e6;
-  --esc-module-c-tint: #e6e6e6;
-  --esc-module-d-tint: #e6e6e6;
-  --esc-module-e-tint: #e6e6e6;
-  --esc-module-f-tint: #e6e6e6;
-  --esc-module-g-tint: #e6e6e6;
-  --esc-module-tint: var(--esc-color-surface-sunken);
+  --esc-module-a-tint: var(--esc-brand-pale);
+  --esc-module-b-tint: var(--esc-brand-pale);
+  --esc-module-c-tint: var(--esc-brand-pale);
+  --esc-module-d-tint: var(--esc-brand-pale);
+  --esc-module-e-tint: var(--esc-brand-pale);
+  --esc-module-f-tint: var(--esc-brand-pale);
+  --esc-module-g-tint: var(--esc-brand-pale);
+  --esc-module-tint: var(--esc-brand-pale);
 
   /* ---------------------------------------------------------------------------
      PILLS — stage and stakeholder tags. Tinted, no border, so they read as
      labels rather than buttons. Every stage and every stakeholder heading has
      its own hook; all neutral until you set them.
      ------------------------------------------------------------------------ */
-  --esc-color-pill-bg: #ebebeb;
-  --esc-color-pill-text: #1a1a1a;
+  --esc-color-pill-bg: var(--esc-brand-pale);
+  --esc-color-pill-text: var(--esc-brand-blue);
   --esc-pill-radius: 999px;                 /* fully rounded ends */
   --esc-pill-padding: var(--esc-space-1) var(--esc-space-3);
 
-  --esc-stage-ideation-bg: var(--esc-color-pill-bg);
-  --esc-stage-rd-bg: var(--esc-color-pill-bg);
-  --esc-stage-proof-of-concept-bg: var(--esc-color-pill-bg);
-  --esc-stage-transition-to-scale-bg: var(--esc-color-pill-bg);
+  /* Stage pills take the ochre so "Use from" reads apart from "Use with",
+     with white text like every dark pill. The guide's exact ochre (#d07f27)
+     only gives white 3.1:1, so the pill uses the same hue and saturation a
+     step deeper, where white reaches 4.8:1. The exact ochre still draws the
+     rules and numbers. */
+  --esc-brand-ochre-deep: #a3631f;
+  --esc-color-pill-stage-bg: var(--esc-brand-ochre-deep);
+  --esc-color-pill-stage-text: #ffffff;
+  --esc-stage-ideation-bg: var(--esc-color-pill-stage-bg);
+  --esc-stage-rd-bg: var(--esc-color-pill-stage-bg);
+  --esc-stage-proof-of-concept-bg: var(--esc-color-pill-stage-bg);
+  --esc-stage-transition-to-scale-bg: var(--esc-color-pill-stage-bg);
 
   --esc-category-internal-bg: var(--esc-color-pill-bg);      /* Inside your organisation */
   --esc-category-government-bg: var(--esc-color-pill-bg);    /* Government & the education system */
   --esc-category-allies-bg: var(--esc-color-pill-bg);        /* Wider allies */
 
-  /* Notices (the test-build recording notice, error messages). */
-  --esc-color-notice-bg: #f4f4f4;
-  --esc-color-notice-border: #8a8a8a;
+  /* Notices (error messages). */
+  --esc-color-notice-bg: var(--esc-brand-pale);
+  --esc-color-notice-border: var(--esc-brand-blue);
 
   /* ---------------------------------------------------------------------------
-     TYPE — system stack. Self-hosted font files get swapped in here later.
+     TYPE — Montserrat (see @font-face above), with a system stack behind it
      ------------------------------------------------------------------------ */
-  --esc-font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --esc-font-family-base: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   --esc-font-family-heading: var(--esc-font-family-base);
 
   --esc-font-size-xs: 0.75rem;    /* 12px */
@@ -142,11 +199,22 @@
   --esc-font-size-2xl: 1.75rem;   /* 28px */
   --esc-font-size-3xl: 2.25rem;   /* 36px */
 
+  --esc-font-weight-light: 300;     /* display headings and the central question */
   --esc-font-weight-normal: 400;
   --esc-font-weight-bold: 700;
 
-  --esc-line-height-base: 1.5;
-  --esc-line-height-tight: 1.25;
+  /* Montserrat has a large x-height and sits wide: body needs a little more
+     leading than a system face. */
+  --esc-line-height-base: 1.6;
+  --esc-line-height-tight: 1.2;
+
+  /* Small uppercase labels ("Central question", "Stage", "Module A"). */
+  --esc-eyebrow-size: var(--esc-font-size-xs);
+  --esc-eyebrow-tracking: 0.08em;
+
+  /* The short rule under a page title. */
+  --esc-accent-rule-width: 3rem;
+  --esc-accent-rule-height: 2px;
 
   /* Comfortable reading width for a paragraph. */
   --esc-measure: 68ch;

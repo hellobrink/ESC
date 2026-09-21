@@ -1,0 +1,9 @@
+Montserrat
+
+Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL
+http://scripts.sil.org/OFL
+
+These files are the Light (300), Regular (400) and Bold (700) weights,
+subset to the Latin range and converted to WOFF2 for use in this tool.

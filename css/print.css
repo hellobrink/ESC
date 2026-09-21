@@ -243,6 +243,12 @@ h1, h2, h3 {
 .next-steps__item .field { margin-top: var(--esc-space-4); }
 
 .screen__title { font-size: var(--esc-print-font-size-title); }
+
+/* The accent rule under a title is a background fill; keep it on paper. */
+.screen__title::after {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
 .central-question__text { font-size: var(--esc-print-font-size-question); }
 .prompt__question { font-size: var(--esc-print-font-size-prompt); }
 .screen__section-title { font-size: var(--esc-print-font-size-prompt); }
@@ -318,9 +324,12 @@ a { text-decoration: none; }
 /* -----------------------------------------------------------------------------
    PILLS — outlined on paper, no ink-heavy fills
    -------------------------------------------------------------------------- */
-.pill {
+.pill,
+.pill[data-stage],
+.pill[data-category] {
   border: var(--esc-print-rule);
   background: none;
+  color: var(--esc-color-text);        /* white-on-dark pills must not vanish on paper */
   margin-right: var(--esc-space-2);
 }
 
