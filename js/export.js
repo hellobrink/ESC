@@ -193,7 +193,8 @@ window.ESC_EXPORT = (function () {
     if (m.ideas.length) {
       parts.push("<h3>" + esc(labels.ideasTitle) + "</h3><ul>" +
         map(m.ideas, function (idea) {
-          return "<li><strong>" + esc(idea.title) + "</strong> " + esc(idea.body) + "</li>";
+          return "<li>" + (idea.title ? "<strong>" + esc(idea.title) + "</strong> " : "") +
+                 esc(idea.body) + "</li>";
         }).join("") + "</ul>");
     }
 

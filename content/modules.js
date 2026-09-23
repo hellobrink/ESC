@@ -193,7 +193,6 @@ window.ESC_CONTENT = {
       useWithOptionalLabel: "optional",
       // A small eyebrow above the question, not a heading.
       centralQuestionLabel: "Start your conversation from here",
-      centralQuestionHint: "This is the question you begin the group conversation with.",
       moduleNotFoundTitle: "Module not found",
       moduleNotFound: "That module could not be found. Go back to the home screen and choose one from the list.",
       attributionTitle: "Who made this",
@@ -210,7 +209,19 @@ window.ESC_CONTENT = {
       // named here rather than sitting on the screen the whole time.
       saveConfirm: "Copy saved. This downloads your progress as a JSON file. Keep it somewhere safe — you'll need it to continue your work later.",
       loadProgress: "Load a saved copy",
-      loadHelp: "Continue from a JSON file you saved earlier.",
+
+      // The two dialogues. Saving and loading both go through a step that
+      // explains the file before anything happens, because the file is the
+      // only thing that carries work between sessions or between devices.
+      saveDialogTitle: "Before you save your progress",
+      saveDialogBody: "Your progress will be downloaded as a JSON file. Keep this file somewhere safe — you’ll need to upload it when you return if you want to continue where you left off.",
+      saveDialogConfirm: "I understand that I need to keep this file to restore my progress.",
+      saveDialogGo: "Download progress",
+      loadDialogTitle: "Load saved progress",
+      loadDialogBody: "Upload the JSON file you previously downloaded to restore your saved progress and continue where you left off.",
+      loadDialogChoose: "Choose file",
+      // Every dialogue can be left without doing anything.
+      dialogCancel: "Cancel",
       startFresh: "Start fresh",
       // Shown in the browser's own confirm box before anything is wiped.
       startFreshConfirm: "This clears everything typed so far, on every module, and cannot be undone. If you have not saved a file, that work is gone. Start fresh anyway?",
@@ -389,8 +400,9 @@ window.ESC_CONTENT = {
      prompts          the questions the group works through, in order. Each has
                       an id, a question and a paragraph of guidance (which may
                       be empty).
-     ideasForAction   short suggestions shown after the prompts. The source
-                      document has not written these yet for any module.
+     ideasForAction   short suggestions shown after the prompts, each a body
+                      paragraph and an optional title. The source document has
+                      not written these yet for any module.
      image            The small icon on the module's card, as a path inside
                       this folder. Set it to "" to fall back to a plain
                       placeholder square.
@@ -435,8 +447,7 @@ window.ESC_CONTENT = {
 
       ideasForAction: [
         {
-          title: "[Ideas for taking action]",
-          body: "[The source document says: if possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken.]"
+          body: "If possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken."
         }
       ]
     },
@@ -496,8 +507,7 @@ window.ESC_CONTENT = {
 
       ideasForAction: [
         {
-          title: "[Ideas for taking action]",
-          body: "[The source document says: if possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken.]"
+          body: "If possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken."
         }
       ]
     },
@@ -552,8 +562,7 @@ window.ESC_CONTENT = {
 
       ideasForAction: [
         {
-          title: "[Ideas for taking action]",
-          body: "[The source document says: if possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken.]"
+          body: "If possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken."
         }
       ]
     },
@@ -606,8 +615,7 @@ window.ESC_CONTENT = {
 
       ideasForAction: [
         {
-          title: "[Ideas for taking action]",
-          body: "[The source document says: if possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken.]"
+          body: "If possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken."
         }
       ]
     },
@@ -655,8 +663,7 @@ window.ESC_CONTENT = {
 
       ideasForAction: [
         {
-          title: "[Ideas for taking action]",
-          body: "[The source document says: if possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken.]"
+          body: "If possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken."
         }
       ]
     },
@@ -719,8 +726,7 @@ window.ESC_CONTENT = {
 
       ideasForAction: [
         {
-          title: "[Ideas for taking action]",
-          body: "[The source document says: if possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken.]"
+          body: "If possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken."
         }
       ]
     },
@@ -736,9 +742,7 @@ window.ESC_CONTENT = {
       useWith: ["org-leadership"],
       image: "icons/module-g.svg",
       useWithOptional: [],
-      // [The source document repeats module E's central question here, which
-      // looks like a copy-and-paste slip. It needs its own question.]
-      centralQuestion: "[Central question for module G — the source document repeats module E's question here.]",
+      centralQuestion: "Does our organisation have the time, skills, and commitment to see the journey through from beginning to end?",
 
       prompts: [
         {
@@ -765,8 +769,7 @@ window.ESC_CONTENT = {
 
       ideasForAction: [
         {
-          title: "[Ideas for taking action]",
-          body: "[The source document says: if possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken.]"
+          body: "If possible, populate this with ~2 ideas for next steps, ideally based on real-world actions that education initiatives have taken."
         }
       ]
     }

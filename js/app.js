@@ -476,8 +476,7 @@
                           "aria-labelledby": "central-question-title" }, [
       h("h2", { class: "central-question__label", id: "central-question-title",
                 text: labels().centralQuestionLabel }),
-      h("p", { class: "central-question__text", text: mod.centralQuestion }),
-      h("p", { class: "central-question__hint", text: labels().centralQuestionHint })
+      h("p", { class: "central-question__text", text: mod.centralQuestion })
     ]);
   }
 
@@ -558,8 +557,10 @@
   function ideasSection(mod) {
     return titledSection("ideas", labels().ideasTitle, "ideas-title", [
       h("ul", { class: "ideas__list" }, map(mod.ideasForAction, function (idea) {
+        // The title is optional: most ideas are a paragraph under the
+        // section heading, and an empty h3 would break the heading order.
         return h("li", { class: "ideas__item" }, [
-          h("h3", { class: "ideas__item-title", text: idea.title }),
+          idea.title && h("h3", { class: "ideas__item-title", text: idea.title }),
           h("p", { class: "ideas__item-body", text: idea.body })
         ]);
       }))
@@ -618,7 +619,7 @@
         type: "button",
         class: "module__save",
         text: labels().saveProgress,
-        on: { click: function () { saveCopy(); } }
+        on: { click: function () { openSaveDialog(); } }
       }),
       h("a", { class: "module__review", href: "#/review", text: labels().review })
     ]);
@@ -815,10 +816,79 @@
     fill("save-status", [labels()[STATUS_LABELS[key]] || ""]);
   }
 
+  /* --- the two dialogues ------------------------------------------------
+
+     Saving and loading both stop for a moment to explain the file, because
+     the file is the only thing that carries work to another day or another
+     machine. <dialog>.showModal() gives the backdrop, the focus trap and
+     Escape for nothing; where it is missing, open() falls straight through
+     to the direct behaviour rather than leaving someone stuck.
+     -------------------------------------------------------------------- */
+
+  // Focus goes back where it came from on close. Modern browsers restore it
+  // themselves, older ones do not, so it is done here either way.
+  var dialogOpener = null;
+
+  function openDialog(id, fallback) {
+    var dlg = byId(id);
+    if (!dlg || !dlg.showModal) { fallback(); return; }
+    dialogOpener = document.activeElement;
+    dlg.showModal();
+  }
+
+  function closeDialog(id) {
+    var dlg = byId(id);
+    if (dlg && dlg.open) { dlg.close(); }
+    if (dialogOpener && dialogOpener.focus) { dialogOpener.focus(); }
+    dialogOpener = null;
+  }
+
+  /* The download is gated on the tick: the box is the acknowledgement, so
+     the button cannot be reached without it. Reset on every opening. */
+  function openSaveDialog() {
+    var tick = byId("save-dialog-confirm");
+    if (tick) {
+      tick.checked = false;
+      byId("save-dialog-go").disabled = true;
+    }
+    openDialog("save-dialog", saveCopy);
+  }
+
+  function wireDialogs() {
+    var tick = byId("save-dialog-confirm");
+    var go = byId("save-dialog-go");
+
+    fill("save-dialog-title", [labels().saveDialogTitle]);
+    fill("save-dialog-body", [labels().saveDialogBody]);
+    fill("save-dialog-confirm-label", [labels().saveDialogConfirm]);
+    fill("save-dialog-go", [labels().saveDialogGo]);
+    fill("save-dialog-cancel", [labels().dialogCancel]);
+
+    fill("load-dialog-title", [labels().loadDialogTitle]);
+    fill("load-dialog-body", [labels().loadDialogBody]);
+    fill("load-dialog-choose", [labels().loadDialogChoose]);
+    fill("load-dialog-cancel", [labels().dialogCancel]);
+
+    tick.addEventListener("change", function () { go.disabled = !tick.checked; }, false);
+
+    go.addEventListener("click", function () {
+      closeDialog("save-dialog");
+      saveCopy();
+    }, false);
+
+    byId("save-dialog-cancel").addEventListener("click", function () {
+      closeDialog("save-dialog");
+    }, false);
+
+    byId("load-dialog-cancel").addEventListener("click", function () {
+      closeDialog("load-dialog");
+    }, false);
+  }
+
   var confirmTimer = null;
 
   /* Downloads the copy and says so. The confirmation is a live region that
-     takes itself away again: no dialogue, nothing to dismiss. */
+     takes itself away again: nothing to dismiss. */
   function saveCopy() {
     var note = byId("save-confirm");
     if (!STATE.download()) { return; }
@@ -836,11 +906,17 @@
     fill("save-progress", [labels().saveProgress]);
     fill("save-help", [labels().saveHelp]);
     fill("progress-review", [labels().review]);
-    fill("load-progress-label", [labels().loadProgress]);
-    fill("load-progress-help", [labels().loadHelp]);
-    byId("load-progress-label").setAttribute("title", labels().loadHelp);
+    // No title attribute: it would compete with the button's own text as the
+    // accessible name. What the file is for is said in the dialogue instead.
+    fill("load-progress-button", [labels().loadProgress]);
 
-    byId("save-progress").addEventListener("click", saveCopy, false);
+    wireDialogs();
+
+    byId("save-progress").addEventListener("click", openSaveDialog, false);
+    byId("load-progress-button").addEventListener("click", function () {
+      // Without <dialog> the picker opens straight away, as it used to.
+      openDialog("load-dialog", function () { loadInput.click(); });
+    }, false);
 
     // Destructive, so it asks first — but only when there is something to lose.
     fill("reset-progress", [labels().startFresh]);
@@ -852,6 +928,7 @@
     loadInput.addEventListener("change", function () {
       var file = loadInput.files && loadInput.files[0];
       if (!file) { return; }
+      closeDialog("load-dialog");
       STATE.importFile(file, function (ok) {
         if (ok) { TELEMETRY.record("progress_loaded", {}); }
         if (!ok) { renderSaveStatus("error"); }

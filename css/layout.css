@@ -337,8 +337,7 @@ a {
 /* Every action in the header is a box, like the buttons in the tool: an
    outline in the header's own white, so they read as controls. */
 .nav__link,
-.nav__button,
-.nav__load-label {
+.nav__button {
   display: inline-flex;
   align-items: center;
   min-height: var(--esc-button-min-height);
@@ -444,11 +443,122 @@ a {
   cursor: pointer;
 }
 
-/* Load a saved copy: a file input kept off the visible page but in the tab
-   order, with its label as the control people see. */
-.nav__item--load { position: relative; }
+/* ---------------------------------------------------------------------------
+   DIALOGUES — saving and loading
 
-.nav__load-input {
+   Two of them, one shape. The native <dialog> element does the work: the
+   backdrop, the focus trap and Escape all come with showModal(), so there is
+   nothing here but the panel. Sized in rem so it stays readable at 200% zoom,
+   and capped by the viewport so it can never be taller than the screen.
+   ------------------------------------------------------------------------ */
+.modal {
+  width: 30rem;
+  max-width: calc(100vw - (var(--esc-page-gutter) * 2));
+  max-height: calc(100vh - (var(--esc-space-6) * 2));
+  padding: 0;
+  overflow: auto;
+  color: var(--esc-color-text);
+  background-color: var(--esc-color-bg);
+  border: var(--esc-border-width-thick) solid var(--esc-color-border-strong);
+  border-radius: var(--esc-radius-md);
+}
+
+/* Dim rather than tint: the screen behind stays legible, which matters when
+   a group is reading it together off one laptop. */
+.modal::backdrop { background-color: rgba(26, 26, 26, 0.55); }
+
+.modal__panel { padding: var(--esc-space-5); }
+
+.modal__title {
+  margin-bottom: var(--esc-space-3);
+  font-size: var(--esc-font-size-xl);
+  font-weight: var(--esc-font-weight-normal);
+  line-height: var(--esc-line-height-tight);
+  color: var(--esc-color-heading);
+}
+
+.modal__body {
+  margin-bottom: var(--esc-space-4);
+  font-size: var(--esc-font-size-md);
+  color: var(--esc-color-text);
+}
+
+/* The acknowledgement. A real checkbox, left at its native size so it is
+   unmistakably one, with the whole line as its label. */
+.modal__check {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--esc-space-5);
+  padding: var(--esc-space-3);
+  background-color: var(--esc-color-layer-secondary);
+  border-radius: var(--esc-radius-sm);
+}
+
+.modal__checkbox {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.15rem;
+  margin-right: var(--esc-space-3);
+}
+
+.modal__checkbox-label {
+  font-size: var(--esc-font-size-md);
+  cursor: pointer;
+}
+
+/* The action comes first in the source, so it is the one that leads on a
+   phone and the one a screen reader reaches first. Reversing the row puts it
+   back on the right on wider screens, with Cancel to its left. */
+.modal__actions {
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Leaving without doing anything reads as text, so it never competes with
+   the action. It is still a real button at a full tap target. */
+.modal__cancel {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--esc-button-min-height);
+  margin-right: var(--esc-space-3);   /* the gap to the action, on its right */
+  padding: var(--esc-space-2) var(--esc-space-3);
+  color: var(--esc-color-link);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* The action. Both dialogues end in one: a button in the save dialogue, a
+   label for the file input in the load one, dressed identically. */
+.modal__go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--esc-button-min-height);
+  padding: var(--esc-button-padding);
+  color: var(--esc-color-button-primary-text);
+  background-color: var(--esc-color-button-primary-bg);
+  border: var(--esc-border-width) solid var(--esc-color-button-primary-border);
+  border-radius: var(--esc-radius-sm);
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Until the box is ticked. Dimmed and not pressable, and the disabled state
+   is set in js/app.js so the two can never disagree. */
+.modal__go[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* The file input is off the visible page but still in the tab order, so the
+   label that stands in for it carries the focus ring. */
+.modal__file {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -460,13 +570,32 @@ a {
   opacity: 0;
 }
 
-.nav__load-input:focus + .nav__load-label,
-.nav__load-input:focus-visible + .nav__load-label {
-  outline: var(--esc-focus-width) solid var(--esc-color-focus-on-brand);
+.modal__file:focus + .modal__go,
+.modal__file:focus-visible + .modal__go {
+  outline: var(--esc-focus-width) solid var(--esc-color-focus);
   outline-offset: var(--esc-focus-offset);
 }
 
-.nav__load-input:focus:not(:focus-visible) + .nav__load-label { outline: none; }
+.modal__file:focus:not(:focus-visible) + .modal__go { outline: none; }
+
+/* Narrow screens: the two actions stack and fill the width rather than
+   crowding onto one line. */
+@media (max-width: 30em) {
+  .modal__panel { padding: var(--esc-space-4); }
+
+  /* Stacked, in source order: the action, then Cancel beneath it. */
+  .modal__actions { display: block; }
+
+  .modal__cancel,
+  .modal__go {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .modal__cancel { margin-top: var(--esc-space-2); }
+}
 
 /* ---------------------------------------------------------------------------
    SCREENS
@@ -855,12 +984,6 @@ a {
   font-weight: var(--esc-font-weight-light);
   line-height: var(--esc-line-height-tight);
   color: var(--esc-color-heading-display);
-}
-
-.central-question__hint {
-  font-size: var(--esc-font-size-sm);
-  color: var(--esc-color-text-muted);
-  margin-top: var(--esc-space-3);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1310,8 +1433,7 @@ a {
 
   /* Long labels get a little less padding rather than a second line. */
   .nav__link,
-  .nav__button,
-  .nav__load-label { padding-left: var(--esc-space-2); padding-right: var(--esc-space-2); }
+  .nav__button { padding-left: var(--esc-space-2); padding-right: var(--esc-space-2); }
 
   .logo-bar__slot--end { margin-left: 0; }
 }
@@ -1336,8 +1458,7 @@ a {
 
   /* Secondary to the title: smaller type and padding, tap target intact. */
   .nav__link,
-  .nav__button,
-  .nav__load-label {
+  .nav__button {
     min-height: var(--esc-button-min-height-sm);
     padding: var(--esc-space-1) var(--esc-space-3);
     font-size: var(--esc-font-size-sm);

@@ -61,17 +61,9 @@
 
       <nav class="site-header__nav nav" aria-label="Tool actions">
         <ul class="nav__list">
-          <!-- Load: the input stays in the document and in the tab order;
-               only the label is seen. Input first, so the label can show
-               its focus. -->
-          <li class="nav__item nav__item--load">
-            <input class="nav__load-input" type="file" id="load-progress"
-                   accept=".json,application/json" aria-describedby="load-progress-help">
-            <label class="nav__load-label" id="load-progress-label" for="load-progress"></label>
-            <!-- Read out with the control, and shown on hover, without taking
-                 a line of the header. -->
-            <span class="u-visually-hidden" id="load-progress-help"></span>
-          </li>
+          <!-- Opens the load dialogue, which explains what to upload before
+               the file picker appears. The file input itself lives there. -->
+          <li class="nav__item"><button type="button" class="nav__button nav__button--load" id="load-progress-button"></button></li>
           <!-- Destructive. Asks before it wipes anything; see wireProgressControls(). -->
           <li class="nav__item"><button type="button" class="nav__button nav__button--reset" id="reset-progress"></button></li>
         </ul>
@@ -210,6 +202,47 @@
 
   </div>
 </footer>
+
+<!-- =========================================================================
+     DIALOGUES — outside main, so neither is inside a screen that gets hidden.
+     Both use the native <dialog> element: showModal() gives the backdrop, the
+     focus trap and Escape for nothing. Where showModal is missing the wiring
+     in js/app.js falls straight through to the old direct behaviour, so the
+     tool still works.
+     ====================================================================== -->
+
+<!-- Saving. The file is the only thing that carries work to another day or
+     another machine, so the point is made before the download, and has to be
+     acknowledged: the button stays disabled until the box is ticked. -->
+<dialog class="modal" id="save-dialog" aria-labelledby="save-dialog-title">
+  <div class="modal__panel">
+    <h2 class="modal__title" id="save-dialog-title"></h2>
+    <p class="modal__body" id="save-dialog-body"></p>
+    <p class="modal__check">
+      <input class="modal__checkbox" type="checkbox" id="save-dialog-confirm">
+      <label class="modal__checkbox-label" id="save-dialog-confirm-label" for="save-dialog-confirm"></label>
+    </p>
+    <div class="modal__actions">
+      <button type="button" class="modal__go" id="save-dialog-go" disabled></button>
+      <button type="button" class="modal__cancel" id="save-dialog-cancel"></button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Loading. Says what to upload, then the label opens the picker natively —
+     no click forwarding, so it behaves like any other file control. -->
+<dialog class="modal" id="load-dialog" aria-labelledby="load-dialog-title">
+  <div class="modal__panel">
+    <h2 class="modal__title" id="load-dialog-title"></h2>
+    <p class="modal__body" id="load-dialog-body"></p>
+    <div class="modal__actions">
+      <!-- Input first, so the label can show its focus ring. -->
+      <input class="modal__file" type="file" id="load-progress" accept=".json,application/json">
+      <label class="modal__go" id="load-dialog-choose" for="load-progress"></label>
+      <button type="button" class="modal__cancel" id="load-dialog-cancel"></button>
+    </div>
+  </div>
+</dialog>
 
 <!-- =========================================================================
      SCRIPTS — plain scripts, loaded in dependency order. No modules, no
