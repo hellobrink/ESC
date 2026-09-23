@@ -56,8 +56,6 @@
      COLOUR — roles, assigned from the brand values above
      ------------------------------------------------------------------------ */
   --esc-color-bg: #ffffff;
-  --esc-color-surface: var(--esc-brand-pale);
-  --esc-color-surface-sunken: var(--esc-brand-pale);
 
   --esc-color-text: #1a1a1a;
   --esc-color-text-muted: #5b6670;
@@ -102,9 +100,6 @@
   --esc-color-button-text: var(--esc-brand-blue);
   --esc-color-button-border: var(--esc-brand-blue);
 
-  /* The current item in the home section switcher. */
-  --esc-color-nav-current: var(--esc-brand-blue);
-
   /* The BETA badge in the title lockup. Informational, never clickable. */
   --esc-color-beta-bg: var(--esc-brand-ochre);
   --esc-color-beta-text: #ffffff;
@@ -119,19 +114,11 @@
   --esc-color-progress-bg: var(--esc-brand-pale);
   --esc-color-progress-border: var(--esc-brand-blue);
 
-  /* The header sticks from this width up. Below it the header scrolls away,
-     because on a phone it would otherwise hold a third of the screen. */
-  --esc-sticky-from: 45em;
   /* Room left above a heading when the page scrolls to it, so it clears the
      stuck header. Roughly the header's height plus a breath. */
   --esc-sticky-offset: 12rem;
   --esc-z-header: 10;
 
-  /* Per-state hooks for the three choices, if you want them to differ.
-     Unused by default — see .rating__option--confident etc. in layout.css. */
-  --esc-color-state-confident: var(--esc-brand-blue);
-  --esc-color-state-unsure: var(--esc-brand-blue);
-  --esc-color-state-concerned: var(--esc-brand-blue);
 
   /* ---------------------------------------------------------------------------
      MODULE COLOURS — placeholders, one per module, for wayfinding.
@@ -219,9 +206,6 @@
   --esc-accent-rule-width: 3rem;
   --esc-accent-rule-height: 2px;
 
-  /* Comfortable reading width for a paragraph. */
-  --esc-measure: 68ch;
-
   /* ---------------------------------------------------------------------------
      SPACE — one scale, used for margin, padding and gaps
      ------------------------------------------------------------------------ */
@@ -240,7 +224,6 @@
   --esc-border-width: 1px;
   --esc-border-width-thick: 2px;
   /* Softened, not rounded: enough to take the hard edge off a button. */
-  --esc-radius-none: 0;
   --esc-radius-sm: 0.1875rem;     /* 3px */
   --esc-radius-md: 0.25rem;       /* 4px */
 
@@ -253,13 +236,12 @@
   /* ---------------------------------------------------------------------------
      LAYOUT
      ------------------------------------------------------------------------ */
-  --esc-module-card-min: 16rem;   /* narrowest a module card gets before it wraps */
   /* The small supporting icon on a module card and its compact tab. */
   --esc-module-icon-size: 2.25rem;
-  --esc-module-icon-size-sm: 1.25rem;
   --esc-button-min-height: 2.75rem;
+  /* Secondary header actions on a phone: smaller, still a comfortable target. */
+  --esc-button-min-height-sm: 2.375rem;   /* 38px */
   --esc-button-padding: var(--esc-space-3) var(--esc-space-5);
-  --esc-nav-underline: var(--esc-border-width-thick);
   --esc-width-container: 60rem;   /* the main page width */
   --esc-width-prose: 44rem;       /* narrower column for reading text */
   --esc-page-gutter: var(--esc-space-4);

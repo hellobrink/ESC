@@ -127,12 +127,6 @@
     return stage ? stage.label : id;
   }
 
-  // A module is tagged with one or more stages: "Research and Development
-  // (R&D), Proof of Concept".
-  function stageLabels(ids) {
-    return map(ids, stageLabel).join(", ");
-  }
-
   function groupLabel(id) {
     var group = findById(CONTENT.stakeholderGroups, id);
     return group ? group.label : id;
@@ -146,7 +140,7 @@
      Shared blocks — used by both the module card and the module screen
      ---------------------------------------------------------------------- */
 
-  // block is a BEM block-element root, e.g. "module-card__meta" or "module__meta".
+  // block is a BEM block-element root, e.g. "module__meta".
   // withOptional adds the stakeholders the source marks as optional.
   function metaList(block, mod, withOptional) {
     return h("dl", { class: block }, [
@@ -843,6 +837,7 @@
     fill("save-help", [labels().saveHelp]);
     fill("progress-review", [labels().review]);
     fill("load-progress-label", [labels().loadProgress]);
+    fill("load-progress-help", [labels().loadHelp]);
     byId("load-progress-label").setAttribute("title", labels().loadHelp);
 
     byId("save-progress").addEventListener("click", saveCopy, false);

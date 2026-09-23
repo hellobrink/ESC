@@ -188,8 +188,7 @@ window.ESC_CONTENT = {
       // --- 3. choosing a module ---
       moduleListTitle: "Choose a module",
       moduleListIntro: "Each module is a separate conversation. You do not have to do them in order.",
-      stageLabel: "Use from",                 // on the conversation screen
-      cardStageLabel: "Stage",                // on the module cards
+      stageLabel: "Use from",
       useWithLabel: "Use with",
       useWithOptionalLabel: "optional",
       // A small eyebrow above the question, not a heading.
@@ -197,7 +196,6 @@ window.ESC_CONTENT = {
       centralQuestionHint: "This is the question you begin the group conversation with.",
       moduleNotFoundTitle: "Module not found",
       moduleNotFound: "That module could not be found. Go back to the home screen and choose one from the list.",
-      contentNotLoaded: "The content file could not be loaded. Check that content/modules.js is present in the folder next to index.html.",
       attributionTitle: "Who made this",
 
       // --- saving and loading ---
@@ -208,10 +206,11 @@ window.ESC_CONTENT = {
       progressTitle: "Your progress",
       saveProgress: "Save a copy",
       saveHelp: "Download your progress so you can continue later.",
-      // Shown briefly after the file downloads. Not a dialogue: nothing to dismiss.
-      saveConfirm: "Copy saved. Keep this file somewhere safe — you'll need it to continue your work later.",
+      // Shown briefly after the file downloads, and only then: the format is
+      // named here rather than sitting on the screen the whole time.
+      saveConfirm: "Copy saved. This downloads your progress as a JSON file. Keep it somewhere safe — you'll need it to continue your work later.",
       loadProgress: "Load a saved copy",
-      loadHelp: "Continue working from a copy you saved earlier.",
+      loadHelp: "Continue from a JSON file you saved earlier.",
       startFresh: "Start fresh",
       // Shown in the browser's own confirm box before anything is wiped.
       startFreshConfirm: "This clears everything typed so far, on every module, and cannot be undone. If you have not saved a file, that work is gone. Start fresh anyway?",
@@ -235,7 +234,6 @@ window.ESC_CONTENT = {
       ideasTitle: "Ideas for taking action",
       nextStepsTitle: "Next steps",
       nextStepPrefix: "Based on the above, I will...",
-      printModule: "Print this module",
 
       // --- feedback on the TOOL (test builds only) ---
       // These are not questions about the initiative. They collect comments on

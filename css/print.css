@@ -58,13 +58,11 @@ body {
    too — a viewport height means a full page, which prints as a blank first
    page. */
 /* The whole repeating-band arrangement depends on display:contents, which is
-   Chrome 65+ / Edge 79+. Without it the module would end up as one giant,
-   unbreakable table row and print as a run of blank pages — far worse than not
+   Chrome 65+ / Edge 79+. Without it the module would end up as one giant, unbreakable table row and print as a run of blank pages — far worse than not
    repeating at all. So it is all gated behind @supports.
 
    Older browsers fall through to ordinary block flow: the logo bar prints once
-   at the top and the funding statement once at the end. Nothing overlaps,
-   nothing is lost, and nothing is blank. */
+   at the top and the funding statement once at the end. Nothing overlaps, nothing is lost, and nothing is blank. */
 @supports (display: contents) {
 
   body.app {
@@ -155,11 +153,7 @@ body {
 .export,
 .review__edit,
 .review__intro,
-.gate,
-.hero__cta,
-.home-nav,
-.guidelines-index,
-.module-card__media { display: none; }
+.guidelines-index { display: none; }
 
 /* Screens that are not on show are already hidden by the hidden attribute. */
 
@@ -182,7 +176,9 @@ body {
    Never leave a heading stranded at the foot of a page, and never split a
    prompt across two.
    -------------------------------------------------------------------------- */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   page-break-after: avoid;
   break-after: avoid;
 }
@@ -214,8 +210,7 @@ h1, h2, h3 {
   margin-top: var(--esc-space-4);
 }
 
-/* The prompts section wrapper dissolves into rows in print (display:contents),
-   taking its rule and spacing with it, so the heading carries them instead. */
+/* The prompts section wrapper dissolves into rows in print (display:contents), taking its rule and spacing with it, so the heading carries them instead. */
 .prompts__title {
   border-top: var(--esc-print-rule);
   padding-top: var(--esc-space-5);

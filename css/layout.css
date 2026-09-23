@@ -24,7 +24,12 @@ body {
   line-height: var(--esc-line-height-base);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--esc-font-family-heading);
   line-height: var(--esc-line-height-tight);
   color: var(--esc-color-heading);
@@ -50,10 +55,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .review__module-letter,
-.review__group-label,
 .central-question__label,
 .module__meta-term,
-.module-card__meta-term,
 .progress__title,
 .guidelines-index__number {
   font-size: var(--esc-eyebrow-size);
@@ -123,14 +126,14 @@ a {
 }
 
 .pill[data-stage] { color: var(--esc-color-pill-stage-text); }
-.pill[data-stage="ideation"]            { background-color: var(--esc-stage-ideation-bg); }
-.pill[data-stage="rd"]                  { background-color: var(--esc-stage-rd-bg); }
-.pill[data-stage="proof-of-concept"]    { background-color: var(--esc-stage-proof-of-concept-bg); }
+.pill[data-stage="ideation"] { background-color: var(--esc-stage-ideation-bg); }
+.pill[data-stage="rd"] { background-color: var(--esc-stage-rd-bg); }
+.pill[data-stage="proof-of-concept"] { background-color: var(--esc-stage-proof-of-concept-bg); }
 .pill[data-stage="transition-to-scale"] { background-color: var(--esc-stage-transition-to-scale-bg); }
 
-.pill[data-category="internal"]   { background-color: var(--esc-category-internal-bg); }
+.pill[data-category="internal"] { background-color: var(--esc-category-internal-bg); }
 .pill[data-category="government"] { background-color: var(--esc-category-government-bg); }
-.pill[data-category="allies"]     { background-color: var(--esc-category-allies-bg); }
+.pill[data-category="allies"] { background-color: var(--esc-category-allies-bg); }
 
 /* The source marks some stakeholders as optional. */
 .pill--optional {
@@ -166,16 +169,6 @@ a {
   padding-left: var(--esc-page-gutter);
   padding-right: var(--esc-page-gutter);
 }
-
-/* Narrower column, for long runs of reading text. */
-.l-prose {
-  max-width: var(--esc-width-prose);
-}
-
-/* Vertical rhythm: space between siblings, nothing before the first child. */
-.l-stack > * + * { margin-top: var(--esc-space-4); }
-.l-stack--loose > * + * { margin-top: var(--esc-space-6); }
-.l-stack--tight > * + * { margin-top: var(--esc-space-2); }
 
 /* ---------------------------------------------------------------------------
    APP SHELL
@@ -259,8 +252,7 @@ a {
   .prompt-list__item { scroll-margin-top: var(--esc-sticky-offset); }
 }
 
-/* Until there is room for all three side by side, the header stacks: Back,
-   then the lockup, then the utilities, each centred. */
+/* Until there is room for all three side by side, the header stacks: Back, then the lockup, then the utilities, each centred. */
 .site-header__row {
   display: grid;
   grid-template-columns: 1fr;
@@ -305,8 +297,15 @@ a {
   border-radius: var(--esc-radius-sm);
 }
 
+/* Back exists only while the header is three columns. Below that there is no
+   room for it beside the title, and it must never become a row of its own
+   above the title — so it is simply not shown. The browser's own Back still
+   works, and the journey is linear. */
+.site-header__back { display: none; }
+
 @media (min-width: 62em) {
   .site-header__back {
+    display: block;
     grid-column: 1;
     justify-self: start;
   }
@@ -356,9 +355,6 @@ a {
 
 /* Start fresh is a button, not a link: it does something rather than going
    somewhere. Dressed the same as the links so the row reads as one set. */
-
-
-
 
 /* ---------------------------------------------------------------------------
    PROGRESS BAND — where the work is held, and the two ways to keep it
@@ -436,8 +432,7 @@ a {
   color: var(--esc-color-heading);
 }
 
-.progress__save,
-.progress__load-label {
+.progress__save {
   display: inline-flex;
   align-items: center;
   min-height: var(--esc-field-min-height);
@@ -447,34 +442,6 @@ a {
   border: var(--esc-border-width) solid var(--esc-color-button-border);
   border-radius: var(--esc-radius-sm);
   cursor: pointer;
-}
-
-.progress__load { margin-left: var(--esc-space-3); }
-
-/* The file input is moved off the visible page, not removed: it keeps its
-   place in the tab order and opens the file dialog on Enter or Space. */
-.progress__load-input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  border: 0;
-  opacity: 0;
-}
-
-.progress__load-input:focus + .progress__load-label {
-  outline: var(--esc-focus-width) solid var(--esc-color-focus);
-  outline-offset: var(--esc-focus-offset);
-}
-
-.progress__load-input:focus:not(:focus-visible) + .progress__load-label { outline: none; }
-
-.progress__load-input:focus-visible + .progress__load-label {
-  outline: var(--esc-focus-width) solid var(--esc-color-focus);
-  outline-offset: var(--esc-focus-offset);
 }
 
 /* Load a saved copy: a file input kept off the visible page but in the tab
@@ -492,8 +459,6 @@ a {
   border: 0;
   opacity: 0;
 }
-
-
 
 .nav__load-input:focus + .nav__load-label,
 .nav__load-input:focus-visible + .nav__load-label {
@@ -528,13 +493,6 @@ a {
 .welcome { max-width: var(--esc-width-prose); }
 
 .welcome__paragraph + .welcome__paragraph { margin-top: var(--esc-space-4); }
-
-.welcome__notice { margin-top: var(--esc-space-6); }
-
-.notice__title {
-  font-size: var(--esc-font-size-md);
-  margin-bottom: var(--esc-space-2);
-}
 
 /* The two ways on: side by side where there is room, stacked at 360. */
 .welcome__actions {
@@ -847,15 +805,12 @@ a {
 
 /* ---------------------------------------------------------------------------
    CONVERSATION (MODULE) SCREEN
-   One continuous worksheet: hierarchy comes from type, space and a few rules,
-   not from boxes. Reading width is capped so lines stay comfortable.
+   One continuous worksheet: hierarchy comes from type, space and a few rules, not from boxes. Reading width is capped so lines stay comfortable.
    ------------------------------------------------------------------------ */
 .screen--module .screen__title {
   max-width: var(--esc-width-worksheet);
   margin-bottom: var(--esc-space-5);
 }
-
-.module__name { display: block; }
 
 .module__section { margin-top: var(--esc-space-7); }
 
@@ -1057,7 +1012,8 @@ a {
    .rating__option--unsure    .rating__label {}
    .rating__option--concerned .rating__label {} */
 
-/* The module-wide rating, after the prompts. */
+/* The module-wide rating,
+ after the prompts. */
 .module__overall {
   max-width: var(--esc-width-worksheet);
   padding-top: var(--esc-space-6);
@@ -1086,7 +1042,8 @@ a {
 
 .feedback__summary::-webkit-details-marker { display: none; }   /* …in older WebKit either */
 
-/* …a plus sign instead, which becomes a minus when open. Decorative: the
+/* …a plus sign instead,
+   which becomes a minus when open. Decorative: the
    summary's own text is what a screen reader announces. */
 .feedback__summary::before {
   content: "+";
@@ -1181,25 +1138,12 @@ a {
   margin-bottom: var(--esc-space-6);
 }
 
-/* The group's name, set large: this is whose work it is. */
-.review__group { margin-bottom: var(--esc-space-5); }
-
-.review__group-label { display: block; }
-
-.review__group-name {
-  display: block;
-  font-size: var(--esc-font-size-xl);
-  font-weight: var(--esc-font-weight-bold);
-  color: var(--esc-color-heading);
-}
-
 .review__module {
   margin-top: var(--esc-space-7);
   border-top: var(--esc-border-width) solid var(--esc-color-border);
   padding-top: var(--esc-space-5);
 }
 
-.review__group + .review__module,
 .review__intro + .review__module { border-top: 0; padding-top: 0; }
 
 .review__module-letter { display: block; }
@@ -1266,8 +1210,7 @@ a {
 
 .export__word,
 .export__print,
-.send__button,
-.gate__submit {
+.send__button {
   display: inline-flex;
   align-items: center;
   min-height: var(--esc-button-min-height);
@@ -1300,21 +1243,6 @@ a {
 .send__status { margin-top: var(--esc-space-3); }
 
 .review__empty { max-width: var(--esc-width-prose); }
-
-/* ---------------------------------------------------------------------------
-   FORM FIELD HINTS AND ERRORS
-   ------------------------------------------------------------------------ */
-.field__hint {
-  color: var(--esc-color-text-muted);
-  margin-bottom: var(--esc-space-3);
-}
-
-.field__error {
-  font-size: var(--esc-font-size-sm);
-  margin-top: var(--esc-space-2);
-}
-
-.field__error:empty { display: none; }
 
 /* ---------------------------------------------------------------------------
    NOTICES — errors, placeholders, the test-build recording notice
@@ -1386,6 +1314,50 @@ a {
   .nav__load-label { padding-left: var(--esc-space-2); padding-right: var(--esc-space-2); }
 
   .logo-bar__slot--end { margin-left: 0; }
+}
+
+/* ---------------------------------------------------------------------------
+   PHONES — the header earns its height
+
+   The title lockup leads; beneath it the two utilities sit as smaller
+   secondary buttons. Back is already out of the header by this width (see the
+   three-column rule above), so the header is two rows: title, then actions.
+   ------------------------------------------------------------------------ */
+@media (max-width: 47.99em) {
+
+  .site-header__row {
+    grid-row-gap: var(--esc-space-2);
+    row-gap: var(--esc-space-2);
+    padding-top: var(--esc-space-3);
+    padding-bottom: var(--esc-space-3);
+  }
+
+  .site-header__brand { margin-bottom: 0; }
+
+  /* Secondary to the title: smaller type and padding, tap target intact. */
+  .nav__link,
+  .nav__button,
+  .nav__load-label {
+    min-height: var(--esc-button-min-height-sm);
+    padding: var(--esc-space-1) var(--esc-space-3);
+    font-size: var(--esc-font-size-sm);
+  }
+
+  /* The working bar keeps the status and Save a copy. Review & Export is the
+     action at the end of a conversation, where there is room for it. */
+  .progress__review,
+  .progress__help { display: none; }
+
+  .progress {
+    padding-top: var(--esc-space-2);
+    padding-bottom: var(--esc-space-2);
+  }
+
+  .progress__actions {
+    margin-top: var(--esc-space-2);
+    margin-bottom: 0;
+  }
+
 }
 
 /* ---------------------------------------------------------------------------

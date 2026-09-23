@@ -66,8 +66,11 @@
                its focus. -->
           <li class="nav__item nav__item--load">
             <input class="nav__load-input" type="file" id="load-progress"
-                   accept=".json,application/json">
+                   accept=".json,application/json" aria-describedby="load-progress-help">
             <label class="nav__load-label" id="load-progress-label" for="load-progress"></label>
+            <!-- Read out with the control, and shown on hover, without taking
+                 a line of the header. -->
+            <span class="u-visually-hidden" id="load-progress-help"></span>
           </li>
           <!-- Destructive. Asks before it wipes anything; see wireProgressControls(). -->
           <li class="nav__item"><button type="button" class="nav__button nav__button--reset" id="reset-progress"></button></li>
