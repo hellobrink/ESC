@@ -49,13 +49,11 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--esc-color-accent);
 }
 
-.module__letter,
-.module-card__letter,
 .review__module-letter,
 .review__group-label,
+.central-question__label,
 .module__meta-term,
 .module-card__meta-term,
-.central-question__label,
 .progress__title,
 .guidelines-index__number {
   font-size: var(--esc-eyebrow-size);
@@ -257,24 +255,70 @@ a {
 
   /* Anything the page scrolls to or focuses stops short of the stuck header. */
   .screen__title,
-  .home-section__title,
   .guidelines-section,
   .prompt-list__item { scroll-margin-top: var(--esc-sticky-offset); }
 }
 
+/* Until there is room for all three side by side, the header stacks: Back,
+   then the lockup, then the utilities, each centred. */
 .site-header__row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  grid-row-gap: var(--esc-space-3);
+  row-gap: var(--esc-space-3);
   align-items: center;
   padding-top: var(--esc-space-3);
   padding-bottom: var(--esc-space-3);
 }
 
 .site-header__brand {
-  margin-right: auto;                  /* pushes the actions to the right */
-  padding-right: var(--esc-space-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: var(--esc-font-weight-bold);
 }
+
+/* Three columns: an empty one, the title lockup, the utilities. The two equal
+   outer columns are what put the title in the middle of the header rather
+   than in the middle of the space left over. */
+@media (min-width: 62em) {
+  .site-header__row {
+    grid-template-columns: 1fr auto 1fr;
+    grid-row-gap: 0;
+    row-gap: 0;
+  }
+
+  .site-header__brand { grid-column: 2; }
+}
+
+/* Informational: small, quiet, and not a control. */
+.site-header__beta {
+  margin-left: var(--esc-space-2);
+  padding: var(--esc-beta-padding);
+  font-size: var(--esc-beta-size);
+  font-weight: var(--esc-font-weight-bold);
+  letter-spacing: var(--esc-eyebrow-tracking);
+  text-transform: uppercase;
+  color: var(--esc-color-beta-text);
+  background-color: var(--esc-color-beta-bg);
+  border-radius: var(--esc-radius-sm);
+}
+
+@media (min-width: 62em) {
+  .site-header__back {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .site-header__nav {
+    grid-column: 3;
+    justify-self: end;
+  }
+}
+
+/* The utilities never wrap into two lines: they are a pair, side by side. */
+.nav__list { flex-wrap: nowrap; }
 
 .site-header__brand-link {
   color: var(--esc-color-header-text);
@@ -289,39 +333,49 @@ a {
   align-items: center;
 }
 
-.nav__item + .nav__item { margin-left: var(--esc-space-5); }
+.nav__item + .nav__item { margin-left: var(--esc-space-3); }
 
+/* Every action in the header is a box, like the buttons in the tool: an
+   outline in the header's own white, so they read as controls. */
 .nav__link,
-.nav__button {
-  display: inline-block;
-  padding: var(--esc-space-2) 0;       /* a comfortable tap height, no box */
+.nav__button,
+.nav__load-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--esc-button-min-height);
+  padding: var(--esc-space-2) var(--esc-space-3);
   color: var(--esc-color-header-text);
+  background-color: transparent;
+  border: var(--esc-border-width) solid var(--esc-color-header-text);
+  border-radius: var(--esc-radius-md);
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .nav__link[aria-current="page"] { font-weight: var(--esc-font-weight-bold); }
 
 /* Start fresh is a button, not a link: it does something rather than going
    somewhere. Dressed the same as the links so the row reads as one set. */
-.nav__button {
-  border: 0;
-  background: none;
-  text-decoration: underline;
-  cursor: pointer;
-}
 
-/* Decorative arrow before Start fresh; screen readers hear only the words. */
-.nav__button--reset::before {
-  content: "\21BB";
-  margin-right: var(--esc-space-1);
-}
+
+
 
 /* ---------------------------------------------------------------------------
    PROGRESS BAND — where the work is held, and the two ways to keep it
    ------------------------------------------------------------------------ */
-.progress-band {
+/* The working bar. Not global chrome: it appears once someone is in the
+   module experience, and on Review & Export, and nowhere else. */
+.progress-band { display: none; }
+
+.has-conversation .progress-band,
+[data-screen="review"] .progress-band {
+  display: block;
   background-color: var(--esc-color-progress-bg);
   border-bottom: var(--esc-border-width) solid var(--esc-color-progress-border);
 }
+
+/* Already on Review & Export: no need to offer it again. */
+[data-screen="review"] .progress__review { display: none; }
 
 .progress {
   display: flex;
@@ -347,9 +401,39 @@ a {
 .progress__actions {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   margin-top: var(--esc-space-2);
   margin-bottom: var(--esc-space-2);
+}
+
+.progress__save-group { margin-right: var(--esc-space-4); }
+
+.progress__help {
+  margin-top: var(--esc-space-1);
+  max-width: 16rem;
+  color: var(--esc-color-text-muted);
+}
+
+/* Review & Export sits with the work, not in the header, and reads as an
+   action rather than a link. */
+.progress__review {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--esc-field-min-height);
+  padding: var(--esc-space-2) var(--esc-space-4);
+  color: var(--esc-color-button-text);
+  background-color: var(--esc-color-button-bg);
+  border: var(--esc-border-width) solid var(--esc-color-button-border);
+  border-radius: var(--esc-radius-md);
+  text-decoration: none;
+}
+
+/* The confirmation after a copy downloads: announced, then gone. */
+.progress__confirm {
+  padding: var(--esc-space-3) 0;
+  border-top: var(--esc-border-width) solid var(--esc-color-progress-border);
+  font-size: var(--esc-font-size-sm);
+  color: var(--esc-color-heading);
 }
 
 .progress__save,
@@ -393,10 +477,31 @@ a {
   outline-offset: var(--esc-focus-offset);
 }
 
-/* While the gate is on show (body.is-gated, set by showScreen() in js/app.js)
-   the header keeps only the tool's name: no actions, no progress band. */
-.is-gated .site-header__nav,
-.is-gated .progress-band { display: none; }
+/* Load a saved copy: a file input kept off the visible page but in the tab
+   order, with its label as the control people see. */
+.nav__item--load { position: relative; }
+
+.nav__load-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+  opacity: 0;
+}
+
+
+
+.nav__load-input:focus + .nav__load-label,
+.nav__load-input:focus-visible + .nav__load-label {
+  outline: var(--esc-focus-width) solid var(--esc-color-focus-on-brand);
+  outline-offset: var(--esc-focus-offset);
+}
+
+.nav__load-input:focus:not(:focus-visible) + .nav__load-label { outline: none; }
 
 /* ---------------------------------------------------------------------------
    SCREENS
@@ -418,23 +523,38 @@ a {
 }
 
 /* ---------------------------------------------------------------------------
-   HOME — hero
+   1. WELCOME
    ------------------------------------------------------------------------ */
-.hero {
-  max-width: var(--esc-width-prose);
-  padding-bottom: var(--esc-space-7);
+.welcome { max-width: var(--esc-width-prose); }
+
+.welcome__paragraph + .welcome__paragraph { margin-top: var(--esc-space-4); }
+
+.welcome__notice { margin-top: var(--esc-space-6); }
+
+.notice__title {
+  font-size: var(--esc-font-size-md);
+  margin-bottom: var(--esc-space-2);
 }
 
-.hero__title { margin-bottom: var(--esc-space-4); }
-
-.hero__intro {
-  font-size: var(--esc-font-size-lg);
-  margin-bottom: var(--esc-space-6);
+/* The two ways on: side by side where there is room, stacked at 360. */
+.welcome__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: var(--esc-space-7);
 }
 
-/* Primary action: a link that looks like a button, because it goes somewhere. */
-.hero__cta {
-  display: inline-block;
+.how__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: var(--esc-space-5);
+}
+
+.welcome__cta,
+.how__cta {
+  display: inline-flex;
+  align-items: center;
   min-height: var(--esc-button-min-height);
   padding: var(--esc-button-padding);
   color: var(--esc-color-button-primary-text);
@@ -445,59 +565,77 @@ a {
   font-weight: var(--esc-font-weight-bold);
 }
 
+.welcome__canvas {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--esc-button-min-height);
+  padding: var(--esc-button-padding);
+  margin-right: var(--esc-space-4);
+  color: var(--esc-color-button-text);
+  background-color: var(--esc-color-button-bg);
+  border: var(--esc-border-width) solid var(--esc-color-button-border);
+  border-radius: var(--esc-radius-md);
+  text-decoration: none;
+}
+
+/* Secondary to "Let's go": a plain text link between the description and the
+   six steps. */
+.how__guidelines {
+  margin-top: calc(var(--esc-space-6) * -1 + var(--esc-space-2));
+  margin-bottom: var(--esc-space-6);
+  font-size: var(--esc-font-size-sm);
+}
+
 /* ---------------------------------------------------------------------------
-   HOME — section switcher (About | Guidelines | Modules)
-   In-page links, not an ARIA tab widget: the sections switch on the hash.
+   2. HOW TO USE THIS TOOL — six numbered cards. Not interactive.
    ------------------------------------------------------------------------ */
-.home-nav {
-  border-bottom: var(--esc-border-width) solid var(--esc-color-border);
+.how { max-width: var(--esc-width-container); }
+
+.how__intro {
+  max-width: var(--esc-width-prose);
   margin-bottom: var(--esc-space-6);
 }
 
-.home-nav__list {
-  display: flex;
-  flex-wrap: wrap;
+.how__steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: var(--esc-space-4);
+  gap: var(--esc-space-4);
 }
 
-.home-nav__item + .home-nav__item { margin-left: var(--esc-space-5); }
-
-.home-nav__link {
-  display: block;
-  padding: var(--esc-space-3) 0;
-  margin-bottom: calc(var(--esc-nav-underline) * -1);   /* sits on the rule */
-  border-bottom: var(--esc-nav-underline) solid transparent;
-  text-decoration: none;
-  color: var(--esc-color-text-muted);
+@media (min-width: 40em) {
+  .how__steps { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Hover: the underline appears faintly, the text colour stays put. */
-.home-nav__link:hover { border-bottom-color: var(--esc-color-border); }
-
-.home-nav__link[aria-current="true"] {
-  color: var(--esc-color-nav-current);
-  border-bottom-color: var(--esc-color-nav-current);
-  font-weight: var(--esc-font-weight-bold);
+@media (min-width: 60em) {
+  .how__steps { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* Informational, not interactive: the pale fill sets these apart from the
+   white cards and outlined buttons that do something. No hover state, for
+   the same reason. */
+.how__step {
+  padding: var(--esc-space-6);
+  background-color: var(--esc-brand-pale);
+  border-radius: var(--esc-radius-md);
+}
+
+.how__step-number {
+  font-size: var(--esc-font-size-3xl);
+  font-weight: var(--esc-font-weight-light);
+  line-height: 1;
+  color: var(--esc-color-heading-display);
+  margin-bottom: var(--esc-space-4);
+}
+
+.how__step-text { color: var(--esc-color-text); }
 
 /* ---------------------------------------------------------------------------
-   HOME — sections
+   GUIDELINES page
    ------------------------------------------------------------------------ */
-.home-section__title {
-  font-size: var(--esc-font-size-xl);
+.guidelines__intro {
+  max-width: var(--esc-width-prose);
   margin-bottom: var(--esc-space-5);
-}
-
-/* About: plain paragraphs, no boxes. */
-.about__body { max-width: var(--esc-width-prose); }
-
-.about__paragraph + .about__paragraph { margin-top: var(--esc-space-4); }
-
-.about__attribution {
-  margin-top: var(--esc-space-6);
-  padding-top: var(--esc-space-4);
-  border-top: var(--esc-border-width) solid var(--esc-color-border);
-  font-size: var(--esc-font-size-sm);
-  color: var(--esc-color-text-muted);
 }
 
 /* Guidelines: an index, then four numbered sections down the page. */
@@ -602,19 +740,26 @@ a {
   gap: var(--esc-space-5);
 }
 
-@media (min-width: 45em) {
-  .module-list__items {
-    grid-template-columns: repeat(auto-fit, minmax(var(--esc-module-card-min), 1fr));
-  }
+/* Four across, then three — the eighth position simply stays empty, so the
+   second row lines up with the first rather than centring. Four engages once
+   the container is at its full width, not before. */
+@media (min-width: 40em) {
+  .module-list__items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 62em) {
+  .module-list__items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 .module-card {
   position: relative;                /* the link's hit area is placed against this */
   display: flex;
   flex-direction: column;
+  padding: var(--esc-space-4);
+  background-color: var(--esc-color-bg);
   border: var(--esc-border-width) solid var(--esc-color-border);
+  border-top: var(--esc-border-width-thick) solid var(--esc-module-color);
   border-radius: var(--esc-radius-md);
-  overflow: hidden;                  /* the band follows the rounded corners */
 }
 
 .module-card:hover { border-color: var(--esc-color-border-strong); }
@@ -626,32 +771,34 @@ a {
   outline-offset: var(--esc-focus-offset);
 }
 
-.module-card__media {
-  height: var(--esc-module-card-media-height);
+/* Supporting, not the subject. A placeholder square until the artwork lands;
+   an <img> inside simply fills it. */
+.module-card__icon {
+  display: block;
+  width: var(--esc-module-icon-size);
+  height: var(--esc-module-icon-size);
+  margin-bottom: var(--esc-space-3);
   background-color: var(--esc-module-tint);
+  border: var(--esc-border-width) solid var(--esc-module-color);
+  border-radius: var(--esc-radius-sm);
 }
 
-.module-card__image {
+/* The icons are drawn in the brand colours already, so they are shown as
+   artwork rather than tinted: no box, no border. */
+.module-card__icon--art {
+  background-color: transparent;
+  border: 0;
+}
+
+.module-card__icon-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-}
-
-.module-card__body {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  padding: var(--esc-space-4);
-}
-
-.module-card__letter {
-  color: var(--esc-module-color);
-  margin-bottom: var(--esc-space-2);
+  object-fit: contain;
 }
 
 .module-card__title {
-  font-size: var(--esc-font-size-lg);
-  margin-bottom: var(--esc-space-4);
+  font-size: var(--esc-font-size-md);
+  margin: 0;
 }
 
 .module-card__link {
@@ -670,13 +817,33 @@ a {
   left: 0;
 }
 
-.module-card__meta { font-size: var(--esc-font-size-sm); }
+/* ---------------------------------------------------------------------------
+   THE GRID, COLLAPSED — once a module is chosen the same seven cards stay in
+   the same places and simply take less room: the icons go, the questions
+   remain. Nothing is re-ordered and no second navigation appears.
+   ------------------------------------------------------------------------ */
+.module-list__items--collapsed { margin-bottom: var(--esc-space-7); }
 
-.module-card__meta-row + .module-card__meta-row { margin-top: var(--esc-space-2); }
+.module-list__items--collapsed .module-card { padding: var(--esc-space-3); }
 
-.module-card__meta-term { margin-bottom: var(--esc-space-1); }
+.module-list__items--collapsed .module-card__icon { display: none; }
 
-.module-card__meta-value { margin-left: 0; }
+.module-list__items--collapsed .module-card__title { font-size: var(--esc-font-size-sm); }
+
+/* The one being worked on. */
+.module-card--current {
+  color: var(--esc-color-text-inverse);
+  background-color: var(--esc-module-color);
+  border-color: var(--esc-module-color);
+}
+
+.module-card--current .module-card__link {
+  color: var(--esc-color-text-inverse);
+  text-decoration: none;
+}
+
+/* The conversation opens directly underneath the grid. */
+.conversation:focus { outline: none; }
 
 /* ---------------------------------------------------------------------------
    CONVERSATION (MODULE) SCREEN
@@ -686,12 +853,6 @@ a {
 .screen--module .screen__title {
   max-width: var(--esc-width-worksheet);
   margin-bottom: var(--esc-space-5);
-}
-
-.module__letter {
-  display: block;
-  color: var(--esc-module-color);          /* per-module colour hook */
-  margin-bottom: var(--esc-space-2);
 }
 
 .module__name { display: block; }
@@ -985,19 +1146,30 @@ a {
 .next-steps__field .field__label { font-weight: var(--esc-font-weight-normal); }
 
 /* ---------------------------------------------------------------------------
-   MODULE ACTIONS
+   MODULE ACTIONS — save, review and print, at the foot of a conversation
    ------------------------------------------------------------------------ */
 .module__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   max-width: var(--esc-width-worksheet);
   padding-top: var(--esc-space-6);
   border-top: var(--esc-border-width) solid var(--esc-color-border);
 }
 
-.module__print {
-  min-height: var(--esc-field-min-height);
-  padding: var(--esc-space-2) var(--esc-space-3);
-  border: var(--esc-border-width) solid var(--esc-color-border-strong);
-  border-radius: var(--esc-radius-sm);
+.module__save,
+.module__review {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--esc-button-min-height);
+  padding: var(--esc-space-2) var(--esc-space-4);
+  margin-right: var(--esc-space-3);
+  margin-top: var(--esc-space-2);
+  color: var(--esc-color-button-text);
+  background-color: var(--esc-color-button-bg);
+  border: var(--esc-border-width) solid var(--esc-color-button-border);
+  border-radius: var(--esc-radius-md);
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -1130,28 +1302,12 @@ a {
 .review__empty { max-width: var(--esc-width-prose); }
 
 /* ---------------------------------------------------------------------------
-   SESSION GATE — test builds only. One task: read the notice, enter a code.
+   FORM FIELD HINTS AND ERRORS
    ------------------------------------------------------------------------ */
-.gate { max-width: var(--esc-width-prose); }
-
-.gate__title { margin-bottom: var(--esc-space-4); }
-
-.gate__notice {
-  font-size: var(--esc-font-size-lg);
-  margin-bottom: var(--esc-space-7);
-}
-
-.gate__field .field__label {
-  font-size: var(--esc-font-size-xl);
-  margin-bottom: var(--esc-space-2);
-}
-
 .field__hint {
   color: var(--esc-color-text-muted);
   margin-bottom: var(--esc-space-3);
 }
-
-.gate__field .field__input { max-width: 20rem; }
 
 .field__error {
   font-size: var(--esc-font-size-sm);
@@ -1159,20 +1315,6 @@ a {
 }
 
 .field__error:empty { display: none; }
-
-/* Primary action: dark, with a decorative arrow. */
-.gate__submit {
-  margin-top: var(--esc-space-4);
-  color: var(--esc-color-button-primary-text);
-  background-color: var(--esc-color-button-primary-bg);
-  border-color: var(--esc-color-button-primary-border);
-  font-weight: var(--esc-font-weight-bold);
-}
-
-.gate__submit::after {
-  content: "\2192";
-  margin-left: var(--esc-space-2);
-}
 
 /* ---------------------------------------------------------------------------
    NOTICES — errors, placeholders, the test-build recording notice
@@ -1222,15 +1364,26 @@ a {
 
   .prompt__question { font-size: var(--esc-font-size-lg); }
 
-  .hero__title { font-size: var(--esc-font-size-2xl); }
-
-  /* Brand on its own line; the three actions in a row beneath. */
-  .site-header__brand {
+  /* The two welcome actions stack, full width, rather than squeezing. */
+  .welcome__canvas,
+  .welcome__cta,
+  .how__cta {
     width: 100%;
+    justify-content: center;
     margin-right: 0;
-    padding-right: 0;
-    margin-bottom: var(--esc-space-2);
   }
+
+  .welcome__canvas { margin-bottom: var(--esc-space-3); }
+
+  .how__guidelines {
+    margin-left: 0;
+    margin-top: var(--esc-space-4);
+  }
+
+  /* Long labels get a little less padding rather than a second line. */
+  .nav__link,
+  .nav__button,
+  .nav__load-label { padding-left: var(--esc-space-2); padding-right: var(--esc-space-2); }
 
   .logo-bar__slot--end { margin-left: 0; }
 }

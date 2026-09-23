@@ -38,9 +38,9 @@
 </div>
 
 <!-- =========================================================================
-     HEADER — on every screen, and sticky on wider screens. The tool's name,
-     the two actions, and the progress band beneath. While the test-build
-     gate is on show (body.is-gated) only the name is visible.
+     HEADER — on every screen, sticky on wider screens. The tool's identity
+     and two light utilities. Review & Export is not here: it belongs with
+     the work, in the bar below and at the foot of a conversation.
      Every id here is wired up in js/app.js.
      ====================================================================== -->
 <header class="site-header">
@@ -48,13 +48,27 @@
   <div class="l-container">
     <div class="site-header__row">
 
-      <p class="site-header__brand">
-        <a class="site-header__brand-link" id="masthead-brand" href="#/"></a>
+      <!-- Appears once someone is past Welcome; see renderBack() in js/app.js. -->
+      <p class="site-header__back" id="site-header-back" hidden>
+        <a class="nav__button nav__button--back" id="nav-back" href="#/"></a>
       </p>
 
-      <nav class="site-header__nav nav" aria-label="Sections">
+      <p class="site-header__brand">
+        <a class="site-header__brand-link" id="masthead-brand" href="#/"></a>
+        <!-- Informational only: not a link, not a control. -->
+        <span class="site-header__beta" id="masthead-beta"></span>
+      </p>
+
+      <nav class="site-header__nav nav" aria-label="Tool actions">
         <ul class="nav__list">
-          <li class="nav__item"><a class="nav__link" id="nav-review" href="#/review" data-route="review"></a></li>
+          <!-- Load: the input stays in the document and in the tab order;
+               only the label is seen. Input first, so the label can show
+               its focus. -->
+          <li class="nav__item nav__item--load">
+            <input class="nav__load-input" type="file" id="load-progress"
+                   accept=".json,application/json">
+            <label class="nav__load-label" id="load-progress-label" for="load-progress"></label>
+          </li>
           <!-- Destructive. Asks before it wipes anything; see wireProgressControls(). -->
           <li class="nav__item"><button type="button" class="nav__button nav__button--reset" id="reset-progress"></button></li>
         </ul>
@@ -63,9 +77,9 @@
     </div>
   </div>
 
-  <!-- Where the work is held, and the two ways to keep it. data-status on the
-       status line is the styling hook: empty | stored-only | no-storage |
-       downloaded | error -->
+  <!-- The working bar: where the work is held, and the two things anyone
+       needs to hand while working. data-status on the status line is the
+       styling hook: empty | stored-only | no-storage | downloaded | error -->
   <div class="progress-band">
     <div class="l-container">
       <div class="progress">
@@ -77,18 +91,19 @@
         </div>
 
         <div class="progress__actions">
-          <button type="button" class="progress__save" id="save-progress"></button>
-          <div class="progress__load">
-            <!-- The input stays in the document and in the tab order; only
-                 the label is seen. Input first, so the label can show its
-                 focus. -->
-            <input class="progress__load-input" type="file" id="load-progress"
-                   accept=".json,application/json">
-            <label class="progress__load-label" id="load-progress-label" for="load-progress"></label>
+          <div class="progress__save-group">
+            <button type="button" class="progress__save" id="save-progress"></button>
+            <p class="progress__help" id="save-help"></p>
           </div>
+          <a class="progress__review" id="progress-review" href="#/review"></a>
         </div>
 
       </div>
+
+      <!-- Confirmation after a copy downloads. Announced, then fades from the
+           flow on its own: nothing to dismiss. -->
+      <p class="progress__confirm" id="save-confirm" role="status" aria-live="polite" hidden></p>
+
     </div>
   </div>
 
@@ -107,69 +122,55 @@
     <div class="notice" id="content-error" hidden></div>
 
     <!-- ---------------------------------------------------------------------
-         SESSION GATE — TEST BUILDS ONLY. Never shown when BUILD is "release".
-         States what a test session records, in plain English, and asks for a
-         group code. All text comes from content/modules.js.
+         1. WELCOME — the introduction, the test notice, and two ways on.
          ------------------------------------------------------------------ -->
-    <section class="screen screen--gate gate" id="session-gate" aria-labelledby="gate-title" hidden>
-      <h1 class="screen__title gate__title" id="gate-title" tabindex="-1"></h1>
-      <p class="gate__notice" id="gate-notice"></p>
-      <form class="gate__form" id="gate-form" novalidate>
-        <div class="field gate__field" id="gate-code-field">
-          <label class="field__label" for="gate-code" id="gate-code-label"></label>
-          <p class="field__hint" id="gate-code-hint"></p>
-          <input class="field__input" type="text" id="gate-code"
-                 autocomplete="off" maxlength="40" aria-describedby="gate-code-hint gate-error">
-          <p class="field__error" id="gate-error" role="alert"></p>
-        </div>
-        <button type="submit" class="gate__submit" id="gate-submit"></button>
-      </form>
-    </section>
-
-    <!-- ---------------------------------------------------------------------
-         HOME — hero, then three sections that behave as tabs.
-         The sections switch on the hash (#about, #guidelines, #modules), so
-         every link into them is an ordinary anchor and deep links work.
-         ------------------------------------------------------------------ -->
-    <section class="screen screen--home" id="screen-home" aria-labelledby="home-title" hidden>
-
-      <div class="hero">
-        <h1 class="screen__title hero__title" id="home-title" tabindex="-1"></h1>
-        <p class="hero__intro" id="home-intro"></p>
-        <a class="hero__cta" id="home-cta" href="#modules"></a>
+    <section class="screen screen--welcome welcome" id="screen-welcome" aria-labelledby="welcome-title" hidden>
+      <h1 class="screen__title" id="welcome-title" tabindex="-1"></h1>
+      <div class="welcome__body" id="welcome-body"></div>
+      <div class="welcome__actions">
+        <!-- Leaves the tool, so it opens in a new tab. The address lives in
+             content/modules.js as meta.canvasUrl. -->
+        <a class="welcome__canvas" id="welcome-canvas" href="#" target="_blank" rel="noopener noreferrer"></a>
+        <a class="welcome__cta" id="welcome-cta" href="#/how"></a>
       </div>
-
-      <nav class="home-nav" id="home-nav">
-        <ul class="home-nav__list">
-          <li class="home-nav__item"><a class="home-nav__link" id="home-nav-about" href="#about"></a></li>
-          <li class="home-nav__item"><a class="home-nav__link" id="home-nav-guidelines" href="#guidelines"></a></li>
-          <li class="home-nav__item"><a class="home-nav__link" id="home-nav-modules" href="#modules"></a></li>
-        </ul>
-      </nav>
-
-      <section class="home-section about" id="about" aria-labelledby="about-title">
-        <h2 class="home-section__title" id="about-title" tabindex="-1"></h2>
-        <div class="about__body" id="about-body"></div>
-      </section>
-
-      <section class="home-section guidelines" id="guidelines" aria-labelledby="guidelines-title" hidden>
-        <h2 class="home-section__title" id="guidelines-title" tabindex="-1"></h2>
-        <div class="guidelines__body" id="guidelines-body"></div>
-      </section>
-
-      <section class="home-section module-list" id="modules" aria-labelledby="modules-title" hidden>
-        <h2 class="home-section__title" id="modules-title" tabindex="-1"></h2>
-        <p class="module-list__intro" id="module-list-intro"></p>
-        <ol class="module-list__items" id="module-list"></ol>
-      </section>
-
     </section>
 
     <!-- ---------------------------------------------------------------------
-         MODULE — rendered from the content file.
+         2. HOW TO USE THIS TOOL — the six instructions as numbered cards.
+         Informational only: nothing here is clickable.
+         ------------------------------------------------------------------ -->
+    <section class="screen screen--how how" id="screen-how" aria-labelledby="how-title" hidden>
+      <h1 class="screen__title" id="how-title" tabindex="-1"></h1>
+      <p class="how__intro" id="how-intro"></p>
+      <p class="how__guidelines"><a class="how__guidelines-link" id="how-guidelines" href="#/guidelines"></a></p>
+      <ol class="how__steps" id="how-steps"></ol>
+      <div class="how__actions">
+        <a class="how__cta" id="how-cta" href="#/modules"></a>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         GUIDELINES — the fuller guidance, on its own page.
+         ------------------------------------------------------------------ -->
+    <section class="screen screen--guidelines guidelines" id="screen-guidelines" aria-labelledby="guidelines-title" hidden>
+      <h1 class="screen__title" id="guidelines-title" tabindex="-1"></h1>
+      <p class="guidelines__intro" id="guidelines-intro"></p>
+      <div class="guidelines__body" id="guidelines-body"></div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         3 + 4. CHOOSE A MODULE, then the conversation.
+         One screen, two states. With no module chosen the picker is a grid of
+         seven large cards; choosing one condenses it to a compact row and the
+         conversation appears underneath. Same section throughout, so it reads
+         as the cards collapsing rather than a new page.
          ------------------------------------------------------------------ -->
     <section class="screen screen--module" id="screen-module" aria-labelledby="module-title" hidden>
       <h1 class="screen__title" id="module-title" tabindex="-1"></h1>
+      <p class="module-list__intro" id="module-intro"></p>
+      <!-- The seven modules. The same grid throughout: choosing one collapses
+           the cards in place and the conversation opens underneath. -->
+      <div id="module-picker"></div>
       <div id="module-body"></div>
     </section>
 

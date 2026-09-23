@@ -63,11 +63,14 @@ window.ESC_STATE = (function () {
   var downloaded = false;
   var autosaveTimer = null;
 
-  // esc-progress-<group code>-2026-09-08.json
+  /* "Education Scalability Conversations - 2026-09-23.json" — a name someone
+     can recognise in a downloads folder a fortnight later. The extension and
+     the contents are unchanged, so a file saved by any earlier version still
+     loads and this one loads anywhere they already work. */
   function filename() {
-    return "esc-progress-" +
-      (data.groupCode ? data.groupCode.replace(/[^A-Za-z0-9_-]+/g, "-") + "-" : "") +
-      window.ESC_EXPORT.dateStamp() + ".json";
+    return "Education Scalability Conversations" +
+      (data.groupCode ? " - " + window.ESC_EXPORT.fileSafe(data.groupCode) : "") +
+      " - " + window.ESC_EXPORT.dateStamp() + ".json";
   }
 
   function blank() {

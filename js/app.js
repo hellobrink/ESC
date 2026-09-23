@@ -187,34 +187,61 @@
   }
 
   /* -------------------------------------------------------------------------
-     Home screen — hero, then About / Guidelines / Modules
-
-     The three sections behave as tabs but are driven by the hash: #about,
-     #guidelines and #modules each show one section, and any other in-page
-     anchor (#guidelines-who …) shows the section that contains it. So "Get
-     started", the section links and the Guidelines index are all ordinary
-     links, deep links work, and the back button does what people expect.
+     1. Welcome — the introduction, the test notice, and two ways on
      ---------------------------------------------------------------------- */
-
-  var HOME_SECTIONS = ["about", "guidelines", "modules"];
-
-  // [ "01", " ", "How to use the tool" ] — a number set apart from its text.
-  function numbered(number, text, numberClass) {
-    return [h("span", { class: numberClass, text: number }), " ", text];
-  }
 
   function paragraphs(list, className) {
     return map(list, function (text) { return h("p", { class: className, text: text }); });
   }
 
-  function aboutBody() {
-    return paragraphs(CONTENT.meta.about, "about__paragraph");
+  // [ "01", " ", "Pick a module…" ] — a number set apart from its text.
+  function numbered(number, text, numberClass) {
+    return [h("span", { class: numberClass, text: number }), " ", text];
   }
+
+  // 1 -> "01". The interface counts in pairs, like the guide's numbering.
+  function twoDigit(n) { return (n < 10 ? "0" : "") + n; }
+
+  function renderWelcome() {
+    var meta = CONTENT.meta;
+
+    fill("welcome-title", [labels().welcomeTitle]);
+    fill("welcome-body", paragraphs(meta.about, "welcome__paragraph"));
+
+    // The recording notice is off for this round: testing happens in the room
+    // with the team present. The wording is still in content/modules.js.
+
+    fill("welcome-canvas", [labels().canvasCta]);
+    byId("welcome-canvas").setAttribute("href", meta.canvasUrl || "#");
+    fill("welcome-cta", [labels().heroCta]);
+  }
+
+  /* -------------------------------------------------------------------------
+     2. How to use this tool — the six instructions as numbered cards.
+     Informational: nothing here is clickable.
+     ---------------------------------------------------------------------- */
+
+  function renderHow() {
+    fill("how-title", [labels().howTitle]);
+    fill("how-intro", [labels().howIntro]);
+    fill("how-steps", map(CONTENT.meta.instructionsShort, function (text, i) {
+      return h("li", { class: "how__step" }, [
+        h("p", { class: "how__step-number", text: twoDigit(i + 1) }),
+        h("p", { class: "how__step-text", text: text })
+      ]);
+    }));
+    fill("how-cta", [labels().howCta]);
+    fill("how-guidelines", [labels().guidelinesLink]);
+  }
+
+  /* -------------------------------------------------------------------------
+     Guidelines — the fuller guidance, on its own page
+     ---------------------------------------------------------------------- */
 
   function guidelinesPart(part, children) {
     return h("section", { class: "guidelines-section", id: part.id,
                           "aria-labelledby": part.id + "-title" },
-      [h("h3", { class: "guidelines-section__title", id: part.id + "-title", tabIndex: -1 },
+      [h("h2", { class: "guidelines-section__title", id: part.id + "-title", tabIndex: -1 },
          numbered(part.number, part.title, "guidelines-section__number"))].concat(children));
   }
 
@@ -237,10 +264,10 @@
         }))
       ]),
 
-      // 01 — the six steps
+      // 01 — the six steps, in full
       guidelinesPart(parts[0], [
         h("ol", { class: "steps" }, map(CONTENT.meta.instructions, function (text, i) {
-          return h("li", { class: "steps__item" }, numbered(String(i + 1), text, "steps__number"));
+          return h("li", { class: "steps__item" }, numbered(twoDigit(i + 1), text, "steps__number"));
         }))
       ]),
 
@@ -261,7 +288,7 @@
             return group.category === category.id;
           });
           return h("div", { class: "stakeholder-group" }, [
-            h("h4", { class: "stakeholder-group__title", text: category.label }),
+            h("h3", { class: "stakeholder-group__title", text: category.label }),
             h("ul", { class: "stakeholder-group__list" }, map(members, function (group) {
               return h("li", { class: "stakeholder-group__item", text: group.label });
             }))
@@ -274,7 +301,7 @@
         g.tips.subtitle && h("p", { class: "guidelines__paragraph", text: g.tips.subtitle }),
         h("ol", { class: "tips" }, map(g.tips.items, function (tip) {
           return h("li", { class: "tips__item" }, [
-            h("h4", { class: "tips__title", text: tip.title }),
+            h("h3", { class: "tips__title", text: tip.title }),
             h("p", { class: "tips__body", text: tip.body })
           ]);
         }))
@@ -282,76 +309,64 @@
     ];
   }
 
-  /* A card answers two questions — what conversation is this, and when is it
-     useful. The title is the one link in; CSS stretches its hit area over the
-     whole card, so there is one tab stop and it is named by the title. */
-  function moduleCard(mod) {
-    return h("li", { class: "module-list__item module-card", "data-module": mod.id }, [
-      h("div", { class: "module-card__media", "aria-hidden": "true" }, [
-        mod.image && h("img", { class: "module-card__image", src: mod.image, alt: "" })
-      ]),
-      h("div", { class: "module-card__body" }, [
-        h("p", { class: "module-card__letter", text: "Module " + mod.letter }),
-        h("h3", { class: "module-card__title" }, [
-          h("a", { class: "module-card__link", href: "#/module/" + mod.id, text: mod.title })
-        ]),
-        h("dl", { class: "module-card__meta" }, [
-          metaRow("module-card__meta", labels().cardStageLabel, stagePills(mod.useFromStages))
-        ])
+  function renderGuidelines() {
+    fill("guidelines-title", [labels().guidelinesTitle]);
+    fill("guidelines-intro", [labels().guidelinesIntro]);
+    fill("guidelines-body", guidelinesBody());
+  }
+
+  /* -------------------------------------------------------------------------
+     3 + 4. The module picker — one component, two states.
+
+     With no module chosen it is a grid of seven large cards. Choosing one
+     condenses it to a compact row and the conversation appears underneath.
+     Both states are the same seven links to #/module/<id>, so choosing and
+     switching are the same action, and nothing touches state: every field is
+     rebuilt from js/state.js on each render, exactly as before.
+     ---------------------------------------------------------------------- */
+
+  /* The icon is supporting, not the subject: a small placeholder until the
+     seven assets arrive. Set `image` on a module in content/modules.js and it
+     is used here; until then the placeholder carries the module colour.
+     Decorative either way — the question is what is read. */
+  function moduleIcon(mod) {
+    return h("span", {
+      // Without artwork the slot is a plain placeholder square; with it, the
+      // icon stands on its own and the placeholder styling comes off.
+      class: "module-card__icon" + (mod.image ? " module-card__icon--art" : ""),
+      "aria-hidden": "true"
+    }, mod.image ? [h("img", { class: "module-card__icon-image", src: mod.image, alt: "" })] : null);
+  }
+
+  // The id the conversation borrows for its accessible name.
+  function questionId(mod) { return "module-q-" + mod.id; }
+
+  /* A card is an icon and the module's question, and nothing else. Once a
+     module is chosen the same cards collapse in place — the icons go, the
+     questions stay, the positions do not move. */
+  function moduleCard(mod, selectedId) {
+    var current = mod.id === selectedId;
+    return h("li", {
+      class: "module-list__item module-card" + (current ? " module-card--current" : ""),
+      "data-module": mod.id
+    }, [
+      moduleIcon(mod),
+      h("h3", { class: "module-card__title", id: questionId(mod) }, [
+        h("a", {
+          class: "module-card__link",
+          href: "#/module/" + mod.id,
+          "aria-current": current ? "true" : null,
+          text: mod.title
+        })
       ])
     ]);
   }
 
-  function renderHome() {
-    var meta = CONTENT.meta || {};
-
-    fill("home-title", [meta.title]);
-    fill("home-intro", [meta.intro]);
-    fill("home-cta", [labels().heroCta]);
-
-    byId("home-nav").setAttribute("aria-label", labels().homeNavLabel);
-    fill("home-nav-about", [labels().aboutTitle]);
-    fill("home-nav-guidelines", [labels().guidelinesTitle]);
-    fill("home-nav-modules", [labels().moduleListTitle]);
-
-    fill("about-title", [labels().aboutHeading]);
-    fill("about-body", aboutBody());
-
-    fill("guidelines-title", [labels().guidelinesTitle]);
-    fill("guidelines-body", guidelinesBody());
-
-    fill("modules-title", [labels().moduleListTitle]);
-    fill("module-list-intro", [labels().moduleListIntro]);
-    fill("module-list", map(CONTENT.modules, moduleCard));
-  }
-
-  /* Show the home section that holds the anchor (or About when there is
-     none), mark its link as current, and hand back the anchor's element so
-     route() can scroll to it and focus it. */
-  function showHomeSection(anchor) {
-    var target = anchor ? byId(anchor) : null;
-    var section = target;
-    var name, links, i;
-
-    while (section && section !== document.body &&
-           !(section.classList && section.classList.contains("home-section"))) {
-      section = section.parentNode;
-    }
-    name = (section && section.id) || HOME_SECTIONS[0];
-
-    for (i = 0; i < HOME_SECTIONS.length; i++) {
-      byId(HOME_SECTIONS[i]).hidden = (HOME_SECTIONS[i] !== name);
-    }
-
-    links = document.querySelectorAll(".home-nav__link");
-    for (i = 0; i < links.length; i++) {
-      if (links[i].getAttribute("href") === "#" + name) {
-        links[i].setAttribute("aria-current", "true");
-      } else {
-        links[i].removeAttribute("aria-current");
-      }
-    }
-    return target;
+  /* The same seven, in the same grid, whether or not one is selected. */
+  function modulePicker(selectedId) {
+    return h("ol", {
+      class: "module-list__items" + (selectedId ? " module-list__items--collapsed" : "")
+    }, map(CONTENT.modules, function (mod) { return moduleCard(mod, selectedId); }));
   }
 
   function renderAttribution() {
@@ -598,50 +613,68 @@
     ]);
   }
 
-  /* window.print() does the work; css/print.css decides what comes out.
-     Also reachable with Ctrl/Cmd+P — the button is here so that printing blank
-     worksheets for a group is discoverable. */
-  function moduleActions(mod) {
+  /* Save a copy and Review & Export, at the foot of a conversation — the
+     point at which a group has finished talking. The same two are in the
+     working bar at the top; this is the pair people reach by scrolling.
+     Printing a single module is no longer offered here; Review & Export still
+     carries Print / Save as PDF, and window.print() is untouched. */
+  function moduleActions() {
     return h("div", { class: "module__section module__actions" }, [
       h("button", {
         type: "button",
-        class: "module__print",
-        text: labels().printModule,
-        on: { click: function () {
-          TELEMETRY.record("print", { screen: "module", moduleId: mod.id });
-          window.print();
-        } }
-      })
+        class: "module__save",
+        text: labels().saveProgress,
+        on: { click: function () { saveCopy(); } }
+      }),
+      h("a", { class: "module__review", href: "#/review", text: labels().review })
     ]);
   }
 
   function renderModule(moduleId) {
-    var mod = findById(CONTENT.modules, moduleId);
+    var mod = moduleId ? findById(CONTENT.modules, moduleId) : null;
 
-    if (!mod) {
+    if (moduleId && !mod) {
       fill("module-title", [labels().moduleNotFoundTitle || ""]);
+      fill("module-intro", []);
+      fill("module-picker", [modulePicker(null)]);
       fill("module-body", [h("p", { class: "notice", text: labels().moduleNotFound })]);
       return;
     }
 
     // Hook for the per-module colour, see css/tokens.css.
-    byId("screen-module").setAttribute("data-module", mod.id);
+    byId("screen-module").setAttribute("data-module", mod ? mod.id : "");
 
-    fill("module-title", [
-      h("span", { class: "module__letter", text: "Module " + mod.letter }),
-      " ",
-      h("span", { class: "module__name", text: mod.title })
-    ]);
+    // The heading and the grid are the same either way: this screen is always
+    // the choice of module. Choosing one only collapses the cards and opens
+    // the conversation below them.
+    fill("module-title", [labels().moduleListTitle]);
+    fill("module-intro", mod ? [] : [labels().moduleListIntro]);
+    fill("module-picker", [modulePicker(mod ? mod.id : null)]);
 
+    if (!mod) {
+      fill("module-body", []);
+      return;
+    }
+
+    /* The conversation takes its accessible name from the selected card's
+       question, so a screen reader announces which conversation this is
+       without the question being written on the screen twice. */
     fill("module-body", [
-      metaList("module__meta", mod, true),        // 2. stage and stakeholder groups
-      centralQuestion(mod),                       // 3. the central question
-      promptsSection(mod),                        // 4. the prompts
-      overallRating(mod),                         // 5. overall rating for the module
-      ideasSection(mod),                          // 6. ideas for taking action
-      nextStepsSection(mod),                      // 7. next steps
-      IS_TEST_BUILD && moduleFeedback(mod),       // 8. feedback on the whole module
-      moduleActions(mod)                          // print
+      h("section", {
+        class: "conversation",
+        id: "conversation",
+        tabIndex: -1,
+        "aria-labelledby": questionId(mod)
+      }, [
+        metaList("module__meta", mod, true),        // stage and stakeholder groups
+        centralQuestion(mod),                       // the central question
+        promptsSection(mod),                        // the prompts
+        overallRating(mod),                         // overall rating for the module
+        ideasSection(mod),                          // ideas for taking action
+        nextStepsSection(mod),                      // next steps
+        IS_TEST_BUILD && moduleFeedback(mod),       // feedback on the whole module
+        moduleActions()                             // save and review
+      ])
     ]);
   }
 
@@ -756,62 +789,8 @@
     fill("review-title", [labels().review || ""]);
     fill("review-intro", [labels().reviewIntro || ""]);
     fill("review-body", [
-      IS_TEST_BUILD && writeUp.groupCode && h("p", { class: "review__group" }, [
-        h("span", { class: "review__group-label", text: labels().groupCodePrefix }), " ",
-        h("strong", { class: "review__group-name", text: writeUp.groupCode })
-      ]),
       !anything && h("p", { class: "review__empty", text: labels().reviewEmpty })
     ].concat(map(touched, reviewModule), [anything && exportActions()]));
-  }
-
-  /* -------------------------------------------------------------------------
-     Session gate — TEST BUILDS ONLY. The plain-English notice of what a test
-     session records, and the group code. Blocks the rest of the tool until
-     dismissed. Never shown in a release build.
-     ---------------------------------------------------------------------- */
-
-  var NOTICE_KEY = "esc.notice.v1";
-  var noticeSeen = false;
-
-  function loadNoticeSeen() {
-    try { noticeSeen = window.localStorage.getItem(NOTICE_KEY) === "1"; } catch (e) { noticeSeen = false; }
-  }
-
-  function markNoticeSeen() {
-    noticeSeen = true;
-    try { window.localStorage.setItem(NOTICE_KEY, "1"); } catch (e) { /* shown again next time; fine */ }
-  }
-
-  function gateNeeded() {
-    if (!IS_TEST_BUILD) { return false; }
-    return !noticeSeen || (CONFIG.REQUIRE_GROUP_CODE && !STATE.getGroupCode());
-  }
-
-  function renderGate() {
-    fill("gate-title", [labels().gateTitle]);
-    fill("gate-notice", [labels().gateNotice]);
-    fill("gate-code-label", [labels().gateCodeLabel]);
-    fill("gate-code-hint", [labels().gateCodeHint]);
-    fill("gate-submit", [labels().gateSubmit]);
-    fill("gate-error", []);
-    byId("gate-code-field").hidden = !CONFIG.REQUIRE_GROUP_CODE;
-    byId("gate-code").value = STATE.getGroupCode();
-  }
-
-  function wireGate() {
-    byId("gate-form").addEventListener("submit", function (e) {
-      var code = byId("gate-code").value.replace(/^\s+|\s+$/g, "");
-      e.preventDefault();
-      if (CONFIG.REQUIRE_GROUP_CODE && !code) {
-        fill("gate-error", [labels().gateCodeRequired]);
-        byId("gate-code").focus();
-        return;
-      }
-      if (code) { STATE.setGroupCode(code); }
-      markNoticeSeen();
-      TELEMETRY.record("session_started", { groupCode: code });
-      route();
-    }, false);
   }
 
   /* -------------------------------------------------------------------------
@@ -842,17 +821,31 @@
     fill("save-status", [labels()[STATUS_LABELS[key]] || ""]);
   }
 
+  var confirmTimer = null;
+
+  /* Downloads the copy and says so. The confirmation is a live region that
+     takes itself away again: no dialogue, nothing to dismiss. */
+  function saveCopy() {
+    var note = byId("save-confirm");
+    if (!STATE.download()) { return; }
+    TELEMETRY.record("progress_saved", {});
+    fill("save-confirm", [labels().saveConfirm]);
+    note.hidden = false;
+    if (confirmTimer) { window.clearTimeout(confirmTimer); }
+    confirmTimer = window.setTimeout(function () { note.hidden = true; }, 8000);
+  }
+
   function wireProgressControls() {
-    var saveButton = byId("save-progress");
     var loadInput = byId("load-progress");
 
     fill("progress-title", [labels().progressTitle]);
     fill("save-progress", [labels().saveProgress]);
+    fill("save-help", [labels().saveHelp]);
+    fill("progress-review", [labels().review]);
     fill("load-progress-label", [labels().loadProgress]);
+    byId("load-progress-label").setAttribute("title", labels().loadHelp);
 
-    saveButton.addEventListener("click", function () {
-      if (STATE.download()) { TELEMETRY.record("progress_saved", {}); }
-    }, false);
+    byId("save-progress").addEventListener("click", saveCopy, false);
 
     // Destructive, so it asks first — but only when there is something to lose.
     fill("reset-progress", [labels().startFresh]);
@@ -877,8 +870,37 @@
      Routing
      ---------------------------------------------------------------------- */
 
-  var SCREEN_IDS = { gate: "session-gate", home: "screen-home", module: "screen-module", review: "screen-review" };
-  var TITLE_IDS = { gate: "gate-title", home: "home-title", module: "module-title", review: "review-title" };
+  /* Where Back goes from each screen. A step up the journey rather than the
+     browser's history, so it behaves the same however someone arrived —
+     including on a deep link — and never leaves the tool. */
+  var BACK_TO = {
+    how: "#/",
+    guidelines: "#/how",
+    module: "#/how",
+    review: "#/modules"
+  };
+
+  function renderBack(name, moduleId) {
+    var back = byId("nav-back");
+    // Welcome is the start of the journey: nothing to go back to.
+    byId("site-header-back").hidden = (name === "welcome");
+    back.setAttribute("href", moduleId ? "#/modules" : (BACK_TO[name] || "#/"));
+  }
+
+  var SCREEN_IDS = {
+    welcome: "screen-welcome",
+    how: "screen-how",
+    guidelines: "screen-guidelines",
+    module: "screen-module",
+    review: "screen-review"
+  };
+  var TITLE_IDS = {
+    welcome: "welcome-title",
+    how: "how-title",
+    guidelines: "guidelines-title",
+    module: "module-title",
+    review: "review-title"
+  };
 
   var hasRendered = false;
   var shownScreen = null;
@@ -894,18 +916,21 @@
     }
 
     if (clean[0] === "module" && clean[1]) { return { name: "module", moduleId: clean[1] }; }
+    if (clean[0] === "modules") { return { name: "module", moduleId: null }; }
     if (clean[0] === "review") { return { name: "review", moduleId: null }; }
+    if (clean[0] === "how") { return { name: "how", moduleId: null }; }
+    if (clean[0] === "guidelines") { return { name: "guidelines", moduleId: null }; }
 
-    // Routes start with a slash. Anything else is an in-page anchor, and all
-    // of those live on the home screen: #about, #modules, #guidelines-who …
-    if (raw && raw.charAt(0) !== "/") { return { name: "home", moduleId: null, anchor: raw }; }
-    return { name: "home", moduleId: null };
+    // Routes start with a slash. Anything else is an in-page anchor, and the
+    // only ones left are the guidelines index: #guidelines-who, #guidelines-tips…
+    if (raw && raw.charAt(0) !== "/") { return { name: "guidelines", moduleId: null, anchor: raw }; }
+    return { name: "welcome", moduleId: null };
   }
 
   function showScreen(name) {
     var key;
-    // The gate is one task on its own: the header stays out of the way.
-    document.body.classList.toggle("is-gated", name === "gate");
+    // css/layout.css uses this to decide where the working bar belongs.
+    document.body.setAttribute("data-screen", name);
     for (key in SCREEN_IDS) {
       if (Object.prototype.hasOwnProperty.call(SCREEN_IDS, key)) {
         byId(SCREEN_IDS[key]).hidden = (key !== name);
@@ -929,32 +954,41 @@
     var current = parseHash();
     var heading, target = null;
 
-    if (gateNeeded()) {
-      renderGate();
-      current = { name: "gate", moduleId: null };
-    } else {
-      if (current.name === "home") {
-        // Moving between sections of a home screen already on show must not
-        // rebuild it under the reader.
-        if (shownScreen !== "home") { renderHome(); }
-        target = showHomeSection(current.anchor);
-      }
-      if (current.name === "module") { renderModule(current.moduleId); }
-      if (current.name === "review") { renderReview(); }
-
-      // All no-ops in a release build.
-      if (current.name === "module") { TELEMETRY.moduleOpened(current.moduleId); }
-      else { TELEMETRY.moduleClosed(); }
-      TELEMETRY.record("navigation", { to: current.name, moduleId: current.moduleId, anchor: current.anchor });
+    if (current.name === "welcome") { renderWelcome(); }
+    if (current.name === "how") { renderHow(); }
+    if (current.name === "guidelines") {
+      // Moving between sections of a page already on show must not rebuild it
+      // under the reader.
+      if (shownScreen !== "guidelines") { renderGuidelines(); }
+      target = current.anchor ? byId(current.anchor) : null;
     }
+    if (current.name === "module") { renderModule(current.moduleId); }
+    if (current.name === "review") { renderReview(); }
+
+    // All no-ops in a release build. A module is only "opened" once one is
+    // chosen; the picker on its own is not a conversation.
+    if (current.name === "module" && current.moduleId) { TELEMETRY.moduleOpened(current.moduleId); }
+    else { TELEMETRY.moduleClosed(); }
+    TELEMETRY.record("navigation", { to: current.name, moduleId: current.moduleId, anchor: current.anchor });
 
     showScreen(current.name);
+    // The working bar belongs to a conversation, not to choosing one.
+    document.body.classList.toggle("has-conversation",
+      current.name === "module" && !!current.moduleId);
     markCurrentNavLink(current.name);
+    renderBack(current.name, current.moduleId);
     shownScreen = current.name;
 
     // The browser could not scroll to the anchor itself: the section was
     // hidden, or not yet rendered, when the hash changed. Do it now.
-    if (target) {
+    // A module was chosen: move to the conversation that just opened, but
+    // leave the scroll position alone so the grid stays where it was.
+    if (current.name === "module" && current.moduleId && hasRendered) {
+      heading = byId("conversation");
+      if (heading) {
+        try { heading.focus({ preventScroll: true }); } catch (e) { heading.focus(); }
+      }
+    } else if (target) {
       target.scrollIntoView(true);
       if (hasRendered) { (target.querySelector("[tabindex]") || target).focus(); }
     } else if (hasRendered) {
@@ -987,6 +1021,8 @@
 
     // Chrome that never changes, rendered once.
     fill("masthead-brand", [CONTENT.meta.title]);
+    fill("masthead-beta", [labels().beta]);
+    fill("nav-back", [labels().back]);
     fill("nav-review", [labels().review]);
     renderAttribution();
 
@@ -994,9 +1030,9 @@
     // browser is storing anything at all.
     STATE.start();
     TELEMETRY.start();
-    loadNoticeSeen();
-    wireGate();
     wireProgressControls();
+    // The gate used to mark the session's start; without it, loading does.
+    TELEMETRY.record("session_started", {});
 
     STATE.onChange(function (detail) {
       // A whole-object change — a loaded file, or a reset — means the fields on

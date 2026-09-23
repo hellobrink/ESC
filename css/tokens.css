@@ -105,6 +105,12 @@
   /* The current item in the home section switcher. */
   --esc-color-nav-current: var(--esc-brand-blue);
 
+  /* The BETA badge in the title lockup. Informational, never clickable. */
+  --esc-color-beta-bg: var(--esc-brand-ochre);
+  --esc-color-beta-text: #ffffff;
+  --esc-beta-size: 0.625rem;      /* 10px */
+  --esc-beta-padding: 0.15rem var(--esc-space-2);
+
   /* Header: dark brand bar, white text — the global level. The progress
      band beneath keeps the pale fill, closed by a brand-blue rule. */
   --esc-color-header-bg: var(--esc-brand-blue);
@@ -185,13 +191,16 @@
   --esc-font-family-base: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   --esc-font-family-heading: var(--esc-font-family-base);
 
-  --esc-font-size-xs: 0.75rem;    /* 12px */
-  --esc-font-size-sm: 0.875rem;   /* 14px */
-  --esc-font-size-md: 1rem;       /* 16px */
-  --esc-font-size-lg: 1.125rem;   /* 18px */
-  --esc-font-size-xl: 1.375rem;   /* 22px */
-  --esc-font-size-2xl: 1.75rem;   /* 28px */
-  --esc-font-size-3xl: 2.25rem;   /* 36px */
+  /* Montserrat runs wide and has a large x-height, so it reads a size bigger
+     than it measures. The scale is pitched a little below a system face to
+     match: the steps between sizes are unchanged, so the hierarchy holds. */
+  --esc-font-size-xs: 0.6875rem;  /* 11px */
+  --esc-font-size-sm: 0.8125rem;  /* 13px */
+  --esc-font-size-md: 0.9375rem;  /* 15px */
+  --esc-font-size-lg: 1.0625rem;  /* 17px */
+  --esc-font-size-xl: 1.25rem;    /* 20px */
+  --esc-font-size-2xl: 1.5rem;    /* 24px */
+  --esc-font-size-3xl: 1.875rem;  /* 30px */
 
   --esc-font-weight-light: 300;     /* display headings and the central question */
   --esc-font-weight-normal: 400;
@@ -230,9 +239,10 @@
      ------------------------------------------------------------------------ */
   --esc-border-width: 1px;
   --esc-border-width-thick: 2px;
+  /* Softened, not rounded: enough to take the hard edge off a button. */
   --esc-radius-none: 0;
-  --esc-radius-sm: 0;
-  --esc-radius-md: 0;
+  --esc-radius-sm: 0.1875rem;     /* 3px */
+  --esc-radius-md: 0.25rem;       /* 4px */
 
   /* ---------------------------------------------------------------------------
      FOCUS RING — keyboard users depend on this. Keep it visible.
@@ -244,7 +254,9 @@
      LAYOUT
      ------------------------------------------------------------------------ */
   --esc-module-card-min: 16rem;   /* narrowest a module card gets before it wraps */
-  --esc-module-card-media-height: 5.5rem;   /* the band or picture at the top of a card */
+  /* The small supporting icon on a module card and its compact tab. */
+  --esc-module-icon-size: 2.25rem;
+  --esc-module-icon-size-sm: 1.25rem;
   --esc-button-min-height: 2.75rem;
   --esc-button-padding: var(--esc-space-3) var(--esc-space-5);
   --esc-nav-underline: var(--esc-border-width-thick);

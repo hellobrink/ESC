@@ -60,6 +60,11 @@ window.ESC_CONTENT = {
     // Shown as the main heading on the home screen and in the browser tab.
     title: "Education Scalability Conversations",
 
+    // WHERE "Download your canvas here" GOES. Paste a new link between the
+    // quotes to change it. It opens in a new tab and needs an internet
+    // connection; everything else in the tool works offline.
+    canvasUrl: "https://www.vvob.org/sites/default/files/2025-10/USER%20GUIDE%20TO%20THE%20EDUCATION%20SCALABILITY%20CHECKLIST.pdf",
+
     // The short introduction under the title on the home screen.
     intro: "A set of structured conversations for teams thinking about scaling an education programme. Each module takes a group through one question in depth. One person types while everyone else talks. At the end you export what you wrote and keep it.",
 
@@ -82,6 +87,17 @@ window.ESC_CONTENT = {
       "Then, use the further prompts to guide your discussion. Together, we hope that this furthers your understanding of the initiative's scalability within this particular category, unlock new insights and ideas.",
       "After the conversation, take 30 mins to work through the list of prompts and capture whether you feel confident, unsure, or worried about it. Based on this, give the module an overall rating.",
       "Agree the next steps. We provide some ideas and examples on how other initiatives have improved their scalability in this category."
+    ],
+
+    // THE SIX STEPS IN SHORT, for the cards on "How to use this tool".
+    // The full versions above are still shown on the Guidelines page.
+    instructionsShort: [
+      "Pick a module",
+      "Bring together suggested stakeholders for a 30-90 minute meeting",
+      "Start your time together by discussing the core question",
+      "Use further prompts to guide the discussion",
+      "After the conversation, take 30 minutes to work through the list of prompts",
+      "Agree the next step"
     ],
 
     // GUIDELINES sections 02, 03 and 04. (Section 01 is the instructions above.)
@@ -148,21 +164,36 @@ window.ESC_CONTENT = {
     labels: {
       review: "Review & Export",
 
-      // --- the home screen ---
+      // --- the header ---
+      beta: "Beta",
+
+      // --- 1. the welcome screen ---
+      welcomeTitle: "Welcome",
+      canvasCta: "Download your canvas here",
       heroCta: "Get started",
-      homeNavLabel: "Sections",                 // read out by screen readers only
-      aboutTitle: "About",                    // the section link
-      aboutHeading: "Welcome",                // the heading inside the section
+
+      // --- 2. how to use this tool ---
+      howTitle: "How to use this tool",
+      howIntro: "Six steps, from picking a module to agreeing what happens next.",
+      howCta: "Let's go",
+      guidelinesLink: "Read full guidelines",
+      back: "Back",
+
+      // --- the guidelines page ---
       guidelinesTitle: "Guidelines",
+      guidelinesIntro: "Fuller guidance on when to hold each conversation, who to bring, and how to facilitate it well.",
       guidelinesIndexTitle: "In this section",  // read out by screen readers only
       guidelinesHowTitle: "How to use the tool",
-      moduleListTitle: "Modules",
+
+      // --- 3. choosing a module ---
+      moduleListTitle: "Choose a module",
       moduleListIntro: "Each module is a separate conversation. You do not have to do them in order.",
       stageLabel: "Use from",                 // on the conversation screen
       cardStageLabel: "Stage",                // on the module cards
       useWithLabel: "Use with",
       useWithOptionalLabel: "optional",
-      centralQuestionLabel: "Central question",
+      // A small eyebrow above the question, not a heading.
+      centralQuestionLabel: "Start your conversation from here",
       centralQuestionHint: "This is the question you begin the group conversation with.",
       moduleNotFoundTitle: "Module not found",
       moduleNotFound: "That module could not be found. Go back to the home screen and choose one from the list.",
@@ -176,7 +207,11 @@ window.ESC_CONTENT = {
       // a file someone has deliberately saved.
       progressTitle: "Your progress",
       saveProgress: "Save a copy",
+      saveHelp: "Download your progress so you can continue later.",
+      // Shown briefly after the file downloads. Not a dialogue: nothing to dismiss.
+      saveConfirm: "Copy saved. Keep this file somewhere safe — you'll need it to continue your work later.",
       loadProgress: "Load a saved copy",
+      loadHelp: "Continue working from a copy you saved earlier.",
       startFresh: "Start fresh",
       // Shown in the browser's own confirm box before anything is wiped.
       startFreshConfirm: "This clears everything typed so far, on every module, and cannot be undone. If you have not saved a file, that work is gone. Start fresh anyway?",
@@ -229,18 +264,15 @@ window.ESC_CONTENT = {
       docDateLabel: "Date",
       docGroupCodeLabel: "Group name",
 
-      // --- TEST BUILDS ONLY: the notice, the group code, and sending ---
+      // --- TEST BUILDS ONLY: the notice and sending ---
       // None of this is shown when config.js has BUILD set to "release".
-      gateTitle: "Before you get started",
-      // The plain-English statement of what a test session records. Keep it honest.
-      gateNotice: "This is a test version of the tool. To help improve it, it records your responses, your ratings, any feedback you give and how you move through the tool, tagged with your group name. It does not ask for your own name or email address. Nothing leaves this computer until someone chooses Send to the team on the Review & Export screen.",
-      gateCodeLabel: "Your group name",
-      gateCodeHint: "The short name provided to your group.",
-      gateCodeRequired: "Enter your group name to continue.",
-      gateSubmit: "Start",
-      groupCodePrefix: "Group name",
+      // NOT CURRENTLY SHOWN: testing is happening in the room, with the team
+      // present, so the notice is off for this round. renderWelcome() in
+      // js/app.js is where it goes back.
+      testNoticeTitle: "About this test version",
+      testNotice: "This is a test version of the tool. To help improve it, it records your responses, your ratings, any feedback you give and how you move through the tool. It does not ask for your name or email address. Nothing leaves this computer until someone chooses Send to the team on the Review & Export screen.",
       sendTitle: "Send to the team",
-      sendIntro: "Sends your answers, your feedback and the usage record to the team, tagged with your group name. Nothing that identifies you personally is included.",
+      sendIntro: "Sends your answers, your feedback and the usage record to the team. Nothing that identifies you personally is included.",
       sendButton: "Send to the team",
       sendSending: "Sending...",
       sendSent: "Sent. Thank you.",
@@ -361,10 +393,9 @@ window.ESC_CONTENT = {
                       be empty).
      ideasForAction   short suggestions shown after the prompts. The source
                       document has not written these yet for any module.
-     image            OPTIONAL. A picture for the module's card on the home
-                      screen, as a path inside this folder, e.g.
-                      "images/module-a.jpg". Leave it as "" for a plain colour
-                      band. Keep pictures small: see README.
+     image            The small icon on the module's card, as a path inside
+                      this folder. Set it to "" to fall back to a plain
+                      placeholder square.
      ======================================================================== */
   modules: [
 
@@ -377,7 +408,7 @@ window.ESC_CONTENT = {
       title: "What is the initiative, and why does it matter?",
       useFromStages: ["ideation"],
       useWith: ["org-leadership", "frontline-staff", "teachers", "caregivers-community"],
-      image: "",
+      image: "icons/module-a.svg",
       useWithOptional: [],
       centralQuestion: "What's the problem we're trying to solve, and do we all agree exactly how we're solving it?",
 
@@ -421,7 +452,7 @@ window.ESC_CONTENT = {
       title: "How will you scale?",
       useFromStages: ["ideation"],
       useWith: ["org-leadership", "coalition-partners"],
-      image: "",
+      image: "icons/module-b.svg",
       useWithOptional: ["national-policymakers", "local-education-officers", "funders"],
       centralQuestion: "How well do we understand our route from where we are today, to scale?",
 
@@ -482,7 +513,7 @@ window.ESC_CONTENT = {
       title: "What is the evidence of impact?",
       useFromStages: ["rd"],
       useWith: ["me-research", "frontline-staff", "local-education-officers", "national-policymakers", "funders"],
-      image: "",
+      image: "icons/module-c.svg",
       useWithOptional: [],
       centralQuestion: "How clear and robust is the evidence that the initiative improves learning, and will keep doing that as we grow into diverse settings?",
 
@@ -538,7 +569,7 @@ window.ESC_CONTENT = {
       title: "How strong is the support for the initiative, and the change it entails?",
       useFromStages: ["rd", "proof-of-concept"],
       useWith: ["frontline-staff", "me-research"],
-      image: "",
+      image: "icons/module-d.svg",
       useWithOptional: ["national-policymakers", "local-education-officers", "school-leaders", "teachers"],
       centralQuestion: "From the classroom to the Ministry, how strongly is the initiative (and change it entails) wanted?",
 
@@ -592,7 +623,7 @@ window.ESC_CONTENT = {
       title: "What is the cost, and is there funding to cover it?",
       useFromStages: ["rd", "proof-of-concept"],
       useWith: ["org-leadership", "finance", "national-policymakers", "local-education-officers", "funders"],
-      image: "",
+      image: "icons/module-e.svg",
       useWithOptional: [],
       centralQuestion: "Do we know what this costs at scale — and is there a realistic route to it being paid for without us?",
 
@@ -641,7 +672,7 @@ window.ESC_CONTENT = {
       title: "Is the initiative designed for ease of transfer, particularly by adopting government institutions?",
       useFromStages: ["proof-of-concept", "transition-to-scale"],
       useWith: ["frontline-staff", "me-research", "teachers", "school-leaders", "local-education-officers"],
-      image: "",
+      image: "icons/module-f.svg",
       useWithOptional: [],
       centralQuestion: "How good is the fit between the initiative, and the organisations that would run it at scale?",
 
@@ -705,7 +736,7 @@ window.ESC_CONTENT = {
       title: "Is your organisation set up to scale the initiative?",
       useFromStages: ["proof-of-concept", "transition-to-scale"],
       useWith: ["org-leadership"],
-      image: "",
+      image: "icons/module-g.svg",
       useWithOptional: [],
       // [The source document repeats module E's central question here, which
       // looks like a copy-and-paste slip. It needs its own question.]

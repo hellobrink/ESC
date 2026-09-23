@@ -260,8 +260,9 @@ window.ESC_EXPORT = (function () {
     if (!writer) { return false; }
     return saveBlob(
       writer.build(writeUp),
-      "esc-write-up-" + (writeUp.groupCode ? fileSafe(writeUp.groupCode) + "-" : "") +
-        writeUp.date + "." + writer.extension
+      "Education Scalability Conversations - write-up" +
+        (writeUp.groupCode ? " - " + fileSafe(writeUp.groupCode) : "") +
+        " - " + writeUp.date + "." + writer.extension
     );
   }
 
