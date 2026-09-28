@@ -206,8 +206,38 @@
     // with the team present. The wording is still in content/modules.js.
 
     fill("welcome-canvas", [labels().canvasCta]);
-    byId("welcome-canvas").setAttribute("href", meta.canvasUrl || "#");
+    renderCanvasLink(meta);
     fill("welcome-cta", [labels().heroCta]);
+  }
+
+  /* The canvas. Where it lives decides how the link behaves, so there is one
+     thing to change in content/modules.js and nothing to change here.
+
+     A path inside this folder is downloaded: the file sits beside the tool,
+     so it works from a web address and from file:// alike, and nothing is
+     fetched until someone asks for it.
+
+     A full address is opened in a new tab instead. The download attribute is
+     ignored across origins, so asking for one would navigate away from the
+     tool mid-conversation — a new tab at least leaves the work where it is. */
+  var ABSOLUTE_URL = /^[a-z][a-z0-9+.-]*:/i;
+
+  function renderCanvasLink(meta) {
+    var link = byId("welcome-canvas");
+    var url = meta.canvasUrl || "";
+
+    link.setAttribute("href", url || "#");
+
+    if (!url || ABSOLUTE_URL.test(url)) {
+      link.removeAttribute("download");
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noopener noreferrer");
+      return;
+    }
+
+    link.removeAttribute("target");
+    link.removeAttribute("rel");
+    link.setAttribute("download", meta.canvasFileName || "");
   }
 
   /* -------------------------------------------------------------------------

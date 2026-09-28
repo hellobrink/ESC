@@ -60,10 +60,20 @@ window.ESC_CONTENT = {
     // Shown as the main heading on the home screen and in the browser tab.
     title: "Education Scalability Conversations",
 
-    // WHERE "Download your canvas here" GOES. Paste a new link between the
-    // quotes to change it. It opens in a new tab and needs an internet
-    // connection; everything else in the tool works offline.
-    canvasUrl: "https://www.vvob.org/sites/default/files/2025-10/USER%20GUIDE%20TO%20THE%20EDUCATION%20SCALABILITY%20CHECKLIST.pdf",
+    // WHERE "Download your canvas here" GOES. One line to change.
+    //
+    // A path inside this folder, as now, is downloaded straight to the
+    // computer and works offline as well as on the web.
+    //
+    // A full address starting http:// or https:// is opened in a new tab
+    // instead, because browsers ignore a download request across origins.
+    // To go back to an externally hosted canvas, paste that address here
+    // and delete downloads/ — nothing else needs changing.
+    canvasUrl: "downloads/education-scalability-conversations.pdf",
+
+    // What the downloaded file is called once it is saved. Ignored when
+    // canvasUrl is a full address.
+    canvasFileName: "Education Scalability Conversations.pdf",
 
     // The short introduction under the title on the home screen.
     intro: "A set of structured conversations for teams thinking about scaling an education programme. Each module takes a group through one question in depth. One person types while everyone else talks. At the end you export what you wrote and keep it.",

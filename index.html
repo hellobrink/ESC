@@ -123,9 +123,11 @@
       <h1 class="screen__title" id="welcome-title" tabindex="-1"></h1>
       <div class="welcome__body" id="welcome-body"></div>
       <div class="welcome__actions">
-        <!-- Leaves the tool, so it opens in a new tab. The address lives in
-             content/modules.js as meta.canvasUrl. -->
-        <a class="welcome__canvas" id="welcome-canvas" href="#" target="_blank" rel="noopener noreferrer"></a>
+        <!-- The canvas. Where it lives is set in content/modules.js as
+             meta.canvasUrl; renderCanvasLink() in js/app.js sets href and,
+             for a file kept beside the tool, download. Nothing is loaded
+             until someone chooses it. -->
+        <a class="welcome__canvas" id="welcome-canvas" href="#"></a>
         <a class="welcome__cta" id="welcome-cta" href="#/how"></a>
       </div>
     </section>
