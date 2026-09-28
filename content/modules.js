@@ -187,7 +187,7 @@ window.ESC_CONTENT = {
 
       // --- 3. choosing a module ---
       moduleListTitle: "Choose a module",
-      moduleListIntro: "Each module is a separate conversation. You do not have to do them in order.",
+      moduleListIntro: "Each module is a separate conversation. You can choose the order you do them in.",
       stageLabel: "Use from",
       useWithLabel: "Use with",
       useWithOptionalLabel: "optional",
